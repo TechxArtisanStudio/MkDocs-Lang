@@ -62,7 +62,8 @@ def execute_command(command, relative_path=None, main_project_path=None, auto_co
 
     # Print the execution paths for confirmation
     if not auto_confirm:
-        print(f"\033[94mThe following command will be executed in each site directory:\033[0m\n{command}")
+        print(f"\033[94mThe following command will be executed in each site directory:\033[0m")
+        print(f"\033[93m{command}\033[0m")
         print("\033[94mThe command will be executed in the following directories:\033[0m")
         for path in execution_paths:
             print(f"  - {path}")
