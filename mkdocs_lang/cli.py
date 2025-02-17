@@ -8,38 +8,38 @@ def main(args=None):
 
     # NewProject action
     newproject_parser = subparsers.add_parser('newproject', help='Create a new project folder with a mkdocs-lang.yml file.')
-    newproject_parser.add_argument('--project', required=True, help='Path to the new project')
-    newproject_parser.add_argument('--github', help='GitHub account for repository URLs')
+    newproject_parser.add_argument('--project', '-p', required=True, help='Path to the new project')
+    newproject_parser.add_argument('--github', '-g', help='GitHub account for repository URLs')
 
     # New action
     newsite_parser = subparsers.add_parser('newsite', help='Create a new MkDocs project.')
     newsite_parser.add_argument('mkdocs_project', help='Name of the MkDocs project')
-    newsite_parser.add_argument('--lang', default='en', help='Language code for the MkDocs project')
-    newsite_parser.add_argument('--project', help='Path to the main project if not in current directory')
+    newsite_parser.add_argument('--lang', '-l', default='en', help='Language code for the MkDocs project')
+    newsite_parser.add_argument('--project', '-p', help='Path to the main project if not in current directory')
 
     # Config action
     config_parser = subparsers.add_parser('config', help='Update configuration for the main project.')
-    config_parser.add_argument('--project', help='Path to the main project')
-    config_parser.add_argument('--github', required=True, help='New GitHub account for repository URLs')
+    config_parser.add_argument('--project', '-p', help='Path to the main project')
+    config_parser.add_argument('--github', '-g', required=True, help='New GitHub account for repository URLs')
 
     # GitClone action
     gitclone_parser = subparsers.add_parser('gitclone', help='Clone a GitHub repository into the main project.')
     gitclone_parser.add_argument('url_repo', nargs='?', help='URL of the GitHub repository to clone')
-    gitclone_parser.add_argument('--lang', default='en', help='Language code for the MkDocs project')
-    gitclone_parser.add_argument('--project', help='Path to the main project if not in current directory')
-    gitclone_parser.add_argument('--batch', help='Path to a file containing multiple repositories to clone')
+    gitclone_parser.add_argument('--lang', '-l', default='en', help='Language code for the MkDocs project')
+    gitclone_parser.add_argument('--project', '-p', help='Path to the main project if not in current directory')
+    gitclone_parser.add_argument('--batch', '-b', help='Path to a file containing multiple repositories to clone')
     gitclone_parser.add_argument('--dry-run', '-d', action='store_true', help='Add repository to mkdocs-lang.yml without cloning')
 
     # Custom Command Line action
     cl_parser = subparsers.add_parser('cl', help='Execute a custom command across all MkDocs projects.')
     cl_parser.add_argument('command', help='The custom command to execute')
-    cl_parser.add_argument('--project', help='Path to the main project if not in current directory')
+    cl_parser.add_argument('--project', '-p', help='Path to the main project if not in current directory')
     cl_parser.add_argument('-y', action='store_true', help='Automatically confirm execution without prompting')
 
     # RemoveSite action
     removesite_parser = subparsers.add_parser('removesite', help='Remove a MkDocs site from the main project.')
     removesite_parser.add_argument('site_name', help='Name of the MkDocs site to remove')
-    removesite_parser.add_argument('--project', help='Path to the main project if not in current directory')
+    removesite_parser.add_argument('--project', '-p', help='Path to the main project if not in current directory')
 
     # Parse arguments
     args = parser.parse_args(args)
