@@ -1,5 +1,5 @@
 import argparse
-from mkdocs_lang.actions import newproject, config, gitclone, cl, newsite
+from mkdocs_lang.actions import newproject, config, gitclone, cl, newsite, removesite
 import os
 
 def main(args=None):
@@ -36,6 +36,11 @@ def main(args=None):
     cl_parser.add_argument('--project', help='Path to the main project if not in current directory')
     cl_parser.add_argument('-y', action='store_true', help='Automatically confirm execution without prompting')
 
+    # RemoveSite action
+    removesite_parser = subparsers.add_parser('remove', help='Remove a MkDocs site from the main project.')
+    removesite_parser.add_argument('site_name', help='Name of the MkDocs site to remove')
+    removesite_parser.add_argument('--project', help='Path to the main project if not in current directory')
+
     # Parse arguments
     args = parser.parse_args(args)
 
@@ -54,6 +59,8 @@ def main(args=None):
             gitclone.clone_repos_from_mkdocs_lang(args.project)
     elif args.action == 'cl':
         cl.execute_command(args.command, args.project, args.y)
+    elif args.action == 'remove':
+        removesite.remove_site(args.site_name, args.project)
 
 if __name__ == '__main__':
     main()
