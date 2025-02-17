@@ -17,6 +17,13 @@ mklang removesite <site-name> -p <path-to-main-project>
 - `<site-name>`: The name of the MkDocs site you want to remove.
 - `--project` or `-p`: The path to the main project directory where the `mkdocs-lang.yml` file is located.
 
+### What It Does
+
+1. **Determines the Main Project Path**: Uses a utility function to find the main project path.
+2. **Checks Configuration**: Ensures `mkdocs-lang.yml` exists and reads its content.
+3. **Removes the Site Directory**: Deletes the directory of the specified site.
+4. **Updates Configuration**: Removes the site entry from `mkdocs-lang.yml`.
+
 ### Example
 
 To remove a site named `mk-website_fr` from your project, you would run:

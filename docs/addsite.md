@@ -1,30 +1,45 @@
-## Add GitHub Repositories
+## Add a New MkDocs Site
 
-The `addsite` action clones an existing GitHub repository into your MkDocs project setup.
+The `addsite` action allows you to add a new MkDocs site to your project by cloning a Git repository.
 
-#### Usage
+### Usage
 
 ```bash
-mklang addsite <repo-url> --lang <language-code> --project <path-to-main-project>
-# or using short options
-mklang addsite <repo-url> -l <language-code> -p <path-to-main-project>
+mklang addsite <url-repo> [options]
+# or using the manage.py script
+python manage.py addsite <url-repo> [options]
 ```
 
-- `repo-url` can be in SSH or HTTPS format.
-- `--lang` (`-l`) specifies the language code for the site.
+### Options
 
-#### What It Does
+- `<url-repo>`: The URL of the Git repository to clone.
+- `--lang`, `-l`: Specify the language code for the MkDocs project. Defaults to `en`.
+- `--project`, `-p`: Specify the path to the main project if not in the current directory.
+- `--batch`, `-b`: Path to a file containing multiple repositories to clone.
+- `--dry-run`, `-d`: Add the repository to `mkdocs-lang.yml` without cloning.
 
-1. Clones the specified GitHub repository into the main project directory.
-2. Updates `mkdocs-lang.yml` with the new site's details.
-3. Converts the `url_repo` to HTTPS format in `mkdocs-lang.yml`.
+### Examples
 
-#### Example
+1. **Clone a Single Repository**
 
-To clone a repository:
+   ```bash
+   mklang addsite git@github.com:username/repo.git --project /path/to/main-project
+   ```
 
-```bash
-mklang addsite git@github.com:TechxArtisanStudio/Openterface.git --lang en --project /path/to/mkdocs-project
-# or using short options
-mklang addsite git@github.com:TechxArtisanStudio/Openterface.git -l en -p /path/to/mkdocs-project
-``` 
+2. **Clone Multiple Repositories from a File**
+
+   ```bash
+   mklang addsite --batch /path/to/repos.txt --project /path/to/main-project
+   ```
+
+3. **Add a Repository Without Cloning**
+
+   ```bash
+   mklang addsite git@github.com:username/repo.git --dry-run --project /path/to/main-project
+   ```
+
+### Notes
+
+- Ensure that the repository URL is correct and accessible.
+- The `--batch` option allows you to specify a file with multiple repositories, each on a new line.
+- The `--dry-run` option is useful for testing changes to `mkdocs-lang.yml` without making any network requests. 

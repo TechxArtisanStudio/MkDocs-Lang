@@ -18,6 +18,15 @@ mklang new <mkdocs-site> -p <path-to-the-mainproject> -l <language-code>
 - `--project` or `-p`: The path to the main project directory where the `mkdocs-lang.yml` file is located.
 - `--lang` or `-l`: The language code for the new site. Defaults to `en` if not specified.
 
+### What It Does
+
+1. **Validates the Language Code**: Ensures the provided language code is supported.
+2. **Determines the Main Project Path**: Reads the main project path and GitHub account from `mkdocs-lang.yml`.
+3. **Creates a New MkDocs Site**: Uses the MkDocs executable from the virtual environment to create a new site directory.
+4. **Updates Configuration Files**:
+   - Updates `mkdocs.yml` with a template.
+   - Adds the new site to `mkdocs-lang.yml`.
+
 ### Example
 
 To create a new site named `mk-website_es` for Spanish in your project, you would run:
@@ -33,4 +42,5 @@ This command will:
 ### Notes
 
 - Ensure the `mkdocs-lang.yml` file is correctly configured before adding a new site.
-- The `newsite` action will not affect any existing sites or configurations within your project. 
+- The `newsite` action will not affect any existing sites or configurations within your project.
+- Supported language codes are based on MkDocs Material's supported languages. 

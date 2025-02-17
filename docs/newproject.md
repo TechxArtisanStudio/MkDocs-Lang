@@ -1,8 +1,8 @@
-### 1. Create a New Project
+## Create a New MkDocs Multi-Language Project
 
 The `newproject` action initializes a new MkDocs multi-language project directory.
 
-#### Usage
+### Usage
 
 ```bash
 mklang newproject --project /path/to/new/project/website-project --github <github-account>
@@ -10,18 +10,23 @@ mklang newproject --project /path/to/new/project/website-project --github <githu
 mklang newproject -p /path/to/new/project/website-project -g <github-account>
 ```
 
-- `--github` (`-g`) is optional. If specified, it writes the GitHub account into `mkdocs-lang.yml`. Otherwise, it defaults to 'your-github-account'.
-- You can update the GitHub account information for `mkdocs-lang.yml` later by using the `config` action.
+### Options
 
-#### What It Does
+- `--project`, `-p`: Specify the path to the new project directory.
+- `--github`, `-g`: (Optional) Specify the GitHub account to be written into `mkdocs-lang.yml`. Defaults to 'your-github-account'.
 
-1. Creates a new project directory named `website-project`.
-2. Sets up a Python virtual environment for shared use across all language-specific MkDocs sites.
-3. Generates `mkdocs-lang.yml` with the absolute path of the main project and a `mkdocs.yml.template`.
-4. Creates `requirements.txt` with `mkdocs-material`.
-5. Installs the packages listed in `requirements.txt` into the virtual environment.
+### What It Does
 
-#### Project Structure
+1. **Creates a New Project Directory**: Initializes a directory named `website-project`.
+2. **Sets Up a Python Virtual Environment**: Creates a virtual environment for shared use across all language-specific MkDocs sites.
+3. **Generates Configuration Files**:
+   - `mkdocs-lang.yml`: Contains the main project path and GitHub account information.
+   - `mkdocs.yml.template`: A template for MkDocs configuration.
+   - `requirements.txt`: Lists `mkdocs-material` as a dependency.
+4. **Installs Requirements**: Installs the packages listed in `requirements.txt` into the virtual environment.
+5. **Creates `repos.txt` Template**: Provides a template for batch cloning repositories.
+
+### Project Structure
 
 After running the command, your project directory will look like this:
 
@@ -30,10 +35,16 @@ After running the command, your project directory will look like this:
 ├── mkdocs-lang.yml
 ├── mkdocs.yml.template
 ├── requirements.txt
+├── repos.txt
 ├── venv/
 ```
 
-#### Definitions
+### Definitions
 
 - **Project**: The main directory where all MkDocs sites for different languages are stored.
-- **Site**: An individual MkDocs site for a specific language within the project. 
+- **Site**: An individual MkDocs site for a specific language within the project.
+
+### Notes
+
+- Ensure the specified project path is correct and accessible.
+- You can update the GitHub account information in `mkdocs-lang.yml` later using the `config` action. 

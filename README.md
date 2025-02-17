@@ -1,6 +1,6 @@
-# MkDocs Multi-Language Project Manager
+# Multi-Language MkDocs Project Management
 
-This tool helps manage multi-language MkDocs projects, allowing you to create, configure, clone, and manage multiple MkDocs sites within a single project structure.
+This project provides a set of command-line tools to manage multi-language MkDocs projects efficiently. It allows you to create, configure, and manage multiple MkDocs sites within a single project directory.
 
 ## Overview
 
@@ -38,12 +38,77 @@ With this mindset, we developed a tool to facilitate the management of these sit
 
 This structure allows for centralized management of all language-specific MkDocs sites, making it easier to synchronize files, manage configurations, and perform Git operations.
 
-## Features
+## Commands
 
-- **File and directory synchronization** across multiple MkDocs sites.
-- **Automated Git actions** like clone, status, pull, and sync (commit & push).
-- **Configurable list of MkDocs sites** that allows each site to be stored in any path.
-- **Universal command execution** across all MkDocs sites.
+### Create a New Project
+
+Initialize a new MkDocs multi-language project directory.
+
+```bash
+mklang newproject --project /path/to/new/project/website-project --github <github-account>
+```
+
+### Add a New MkDocs Site
+
+Add a new MkDocs site to your project by cloning a Git repository.
+
+```bash
+mklang addsite <url-repo> --project <path-to-main-project> --lang <language-code>
+```
+
+### Create a New MkDocs Site
+
+Create a new MkDocs site within your multi-language project setup.
+
+```bash
+mklang new <mkdocs-site> --project <path-to-the-mainproject> --lang <language-code>
+```
+
+### Remove a MkDocs Site
+
+Remove an existing MkDocs site from your project.
+
+```bash
+mklang removesite <site-name> --project <path-to-main-project>
+```
+
+### Copy Files or Folders
+
+Copy a file or folder across all MkDocs sites within your project.
+
+```bash
+mklang copy <source-path> [relative-path] --project <path-to-main-project>
+```
+
+### Delete Files or Folders
+
+Delete a file or folder across all MkDocs sites within your project.
+
+```bash
+mklang del <target-path> [relative-path] --project <path-to-main-project>
+```
+
+### Run Custom Commands
+
+Execute a custom command across all MkDocs sites within your project.
+
+```bash
+mklang run "<the-customized-command-line>" [relative-path] --project <path-to-main-project>
+```
+
+## Organizing Multi-Language MkDocs Projects
+
+This toolset is designed to streamline the management of multi-language documentation projects using MkDocs. By centralizing configuration and automating repetitive tasks, it simplifies the process of maintaining consistent and up-to-date documentation across multiple languages.
+
+### Key Benefits
+
+- **Efficiency**: Automate the setup and management of multiple MkDocs sites.
+- **Consistency**: Ensure uniform configuration and styling across all language sites.
+- **Scalability**: Easily add or remove language sites as your project grows.
+
+This approach is ideal for projects that require documentation in multiple languages, providing a structured and efficient way to manage content across different locales.
+
+For more detailed information on each command, refer to the documentation files in the `docs/` directory.
 
 ## Installation
 
@@ -61,92 +126,6 @@ To install this tool, you need to clone the repository and use `pip` to install 
    ```
 
 This will make the `mklang` command available for system-wide CLI usage.
-
-## Usage
-
-The tool provides several command-line actions to manage your MkDocs projects:
-
-### Create a New Project
-
-Initialize a new MkDocs multi-language project directory.
-
-```bash
-mklang newproject --project /path/to/new/project/website-project --github <github-account>
-# or using short options
-mklang newproject -p /path/to/new/project/website-project -g <github-account>
-```
-
-> **Note:** The `--project` option may not be required if `mklang` is run inside an existing MkDocs-Lang project directory.
-
-For detailed instructions, see the [Create a New Project documentation](docs/newproject.md).
-
-### Create a New MkDocs Site
-
-Add a new MkDocs site to your multi-language setup. For detailed instructions, see the [Create a New MkDocs Site documentation](docs/newsite.md).
-
-```bash
-mklang newsite <mkdocs-site> --project <path-to-the-mainproject> --lang <language-code>
-# or using short options
-mklang newsite <mkdocs-site> -p <path-to-the-mainproject> -l <language-code>
-```
-
-> **Note:** The `--project` option may not be required if `mklang` is run inside an existing MkDocs-Lang project directory.
-
-### Clone GitHub Repositories
-
-Clone an existing GitHub repository into your MkDocs project setup.
-
-```bash
-mklang addsite <repo-url> --lang <language-code> --project <path-to-main-project>
-# or using short options
-mklang addsite <repo-url> -l <language-code> -p <path-to-main-project>
-```
-
-> **Note:** The `--project` option may not be required if `mklang` is run inside an existing MkDocs-Lang project directory.
-
-For detailed instructions, see the [Add GitHub Repositories documentation](docs/addsite.md).
-
-### Execute a Custom Command
-
-Run a custom command across all MkDocs sites within a specified directory structure.
-
-```bash
-mklang run "<the-customized-command-line>" --project /path/to/website-project
-# or using short options
-mklang run "<the-customized-command-line>" -p /path/to/website-project
-```
-
-> **Note:** The `--project` option may not be required if `mklang` is run inside an existing MkDocs-Lang project directory.
-
-For detailed instructions, see the [Universal Command Line Action documentation](docs/run.md).
-
-### Remove a MkDocs Site
-
-Remove a MkDocs site from the main project.
-
-```bash
-mklang removesite <site-name> --project <path-to-main-project>
-# or using short options
-mklang removesite <site-name> -p <path-to-main-project>
-```
-
-> **Note:** The `--project` option may not be required if `mklang` is run inside an existing MkDocs-Lang project directory.
-
-For detailed instructions, see the [Remove a MkDocs Site documentation](docs/removesite.md).
-
-### Copy Files or Folders
-
-Copy a file or folder across all MkDocs sites within your project setup.
-
-```bash
-mklang copy <source-path> [relative-path] --project <path-to-main-project>
-# or using short options
-mklang copy <source-path> [relative-path] -p <path-to-main-project>
-```
-
-> **Note:** The `--project` option may not be required if `mklang` is run inside an existing MkDocs-Lang project directory.
-
-For detailed instructions, see the [Copy Files or Folders documentation](docs/copy.md).
 
 ## Contributing
 

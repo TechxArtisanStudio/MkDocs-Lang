@@ -18,49 +18,27 @@ python manage.py copy <source-path> [relative-path] [options]
 - `--dir`, `-d`: Indicate if the source is a directory. Use this flag when copying directories.
 - `-y`: Automatically confirm execution without prompting for user confirmation.
 - `--force`, `-f`: Overwrite existing files without prompting. Use this flag to avoid manual confirmation for overwriting files.
-- `--backup`, `-b`: Create a backup of existing files before overwriting. The backup will have a `.bak` suffix.
+- `--backup`, `-b`: Create a backup of existing files before overwriting.
 
-### What It Does
+### Examples
 
-1. Validates the source path to ensure it exists.
-2. Determines the main project path, either from the provided `--project` option or by traversing up the directory tree.
-3. Copies the specified file or folder to each MkDocs website directory listed in `mkdocs-lang.yml`.
-4. If a `relative-path` is specified, it is used to determine the target location within each MkDocs site.
-5. Provides options to handle overwrites and create backups of existing files.
+1. **Copy a File to a Specific Subdirectory**
 
-### Example
+   ```bash
+   mklang copy /path/to/file.txt docs/subdir --project /path/to/main-project
+   ```
 
-To copy a file named `blog-1.md` to all MkDocs websites:
+2. **Copy a Directory Across All Sites**
 
-```bash
-mklang copy /path/to/blog-1.md --project /path/to/main-project
-# or using the manage.py script
-python manage.py copy /path/to/blog-1.md --project /path/to/main-project
-```
+   ```bash
+   mklang copy /path/to/assets --dir -y --project /path/to/main-project
+   ```
 
-To copy a file to a specific relative path within each MkDocs site:
+3. **Copy a File and Create Backups of Existing Files**
 
-```bash
-mklang copy /path/to/blog-1.md docs/ --project /path/to/main-project
-# or using the manage.py script
-python manage.py copy /path/to/blog-1.md docs/ --project /path/to/main-project
-```
-
-To copy a directory named `assets` and automatically confirm the operation:
-
-```bash
-mklang copy /path/to/assets --dir -y --project /path/to/main-project
-# or using the manage.py script
-python manage.py copy /path/to/assets --dir -y --project /path/to/main-project
-```
-
-To copy a file and create backups of existing files:
-
-```bash
-mklang copy /path/to/config.yml --backup --project /path/to/main-project
-# or using the manage.py script
-python manage.py copy /path/to/config.yml --backup --project /path/to/main-project
-```
+   ```bash
+   mklang copy /path/to/config.yml --backup --project /path/to/main-project
+   ```
 
 ### Notes
 
