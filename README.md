@@ -74,6 +74,8 @@ mklang newproject --project /path/to/new/project/website-project --github <githu
 mklang newproject -p /path/to/new/project/website-project -g <github-account>
 ```
 
+> **Note:** The `--project` option may not be required if `mklang` is run inside an existing MkDocs-Lang project directory.
+
 For detailed instructions, see the [Create a New Project documentation](docs/newproject.md).
 
 ### Create a New MkDocs Site
@@ -81,10 +83,12 @@ For detailed instructions, see the [Create a New Project documentation](docs/new
 Add a new MkDocs site to your multi-language setup. For detailed instructions, see the [Create a New MkDocs Site documentation](docs/newsite.md).
 
 ```bash
-mklang new <mkdocs-site> --project <path-to-the-mainproject> --lang <language-code>
+mklang newsite <mkdocs-site> --project <path-to-the-mainproject> --lang <language-code>
 # or using short options
-mklang new <mkdocs-site> -p <path-to-the-mainproject> -l <language-code>
+mklang newsite <mkdocs-site> -p <path-to-the-mainproject> -l <language-code>
 ```
+
+> **Note:** The `--project` option may not be required if `mklang` is run inside an existing MkDocs-Lang project directory.
 
 ### Clone GitHub Repositories
 
@@ -95,6 +99,8 @@ mklang addsite <repo-url> --lang <language-code> --project <path-to-main-project
 # or using short options
 mklang addsite <repo-url> -l <language-code> -p <path-to-main-project>
 ```
+
+> **Note:** The `--project` option may not be required if `mklang` is run inside an existing MkDocs-Lang project directory.
 
 For detailed instructions, see the [Add GitHub Repositories documentation](docs/addsite.md).
 
@@ -108,6 +114,8 @@ mklang run "<the-customized-command-line>" --project /path/to/website-project
 mklang run "<the-customized-command-line>" -p /path/to/website-project
 ```
 
+> **Note:** The `--project` option may not be required if `mklang` is run inside an existing MkDocs-Lang project directory.
+
 For detailed instructions, see the [Universal Command Line Action documentation](docs/run.md).
 
 ### Remove a MkDocs Site
@@ -119,6 +127,8 @@ mklang removesite <site-name> --project <path-to-main-project>
 # or using short options
 mklang removesite <site-name> -p <path-to-main-project>
 ```
+
+> **Note:** The `--project` option may not be required if `mklang` is run inside an existing MkDocs-Lang project directory.
 
 For detailed instructions, see the [Remove a MkDocs Site documentation](docs/removesite.md).
 
