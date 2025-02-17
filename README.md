@@ -4,6 +4,8 @@ This tool helps manage multi-language MkDocs projects, allowing you to create, c
 
 ## Overview
 
+> **Note:** This project is actively under development. Features and functionalities may change as improvements are made.
+
 Our philosophy for organizing multi-language MkDocs projects is to treat each language version as an individual MkDocs site. This approach allows for independent management of each language while maintaining a unified structure under a single main directory. Each language-specific MkDocs site resides in its own sub-directory at the same hierarchical level, as illustrated below:
 
 ```
@@ -131,6 +133,20 @@ mklang removesite <site-name> -p <path-to-main-project>
 > **Note:** The `--project` option may not be required if `mklang` is run inside an existing MkDocs-Lang project directory.
 
 For detailed instructions, see the [Remove a MkDocs Site documentation](docs/removesite.md).
+
+### Copy Files or Folders
+
+Copy a file or folder across all MkDocs sites within your project setup.
+
+```bash
+mklang copy <source-path> [relative-path] --project <path-to-main-project>
+# or using short options
+mklang copy <source-path> [relative-path] -p <path-to-main-project>
+```
+
+> **Note:** The `--project` option may not be required if `mklang` is run inside an existing MkDocs-Lang project directory.
+
+For detailed instructions, see the [Copy Files or Folders documentation](docs/copy.md).
 
 ## Contributing
 

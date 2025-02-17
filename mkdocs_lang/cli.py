@@ -1,5 +1,5 @@
 import argparse
-from mkdocs_lang.actions import newproject, config, addsite, run, newsite, removesite
+from mkdocs_lang.actions import newproject, config, addsite, run, newsite, removesite, copy
 import os
 
 def main(args=None):
@@ -41,6 +41,16 @@ def main(args=None):
     removesite_parser.add_argument('site_name', help='Name of the MkDocs site to remove')
     removesite_parser.add_argument('--project', '-p', help='Path to the main project if not in current directory')
 
+    # Copy action
+    copy_parser = subparsers.add_parser('copy', help='Copy a file or folder across all MkDocs projects.')
+    copy_parser.add_argument('source', help='Path to the file or folder to copy')
+    copy_parser.add_argument('relative_path', nargs='?', default=None, help='Relative path within MkDocs sites')
+    copy_parser.add_argument('--project', '-p', help='Path to the main project if not in current directory')
+    copy_parser.add_argument('--dir', '-d', action='store_true', help='Indicate if the source is a directory')
+    copy_parser.add_argument('-y', action='store_true', help='Automatically confirm execution without prompting')
+    copy_parser.add_argument('--force', '-f', action='store_true', help='Overwrite existing files without prompting')
+    copy_parser.add_argument('--backup', '-b', action='store_true', help='Create a backup of existing files before overwriting')
+
     # Parse arguments
     args = parser.parse_args(args)
 
@@ -61,6 +71,8 @@ def main(args=None):
         run.execute_command(args.command, args.project, args.y)
     elif args.action == 'removesite':
         removesite.remove_site(args.site_name, args.project)
+    elif args.action == 'copy':
+        copy.copy_item(args.source, args.relative_path, args.project, args.dir, args.y, args.force, args.backup)
 
 if __name__ == '__main__':
     main()
