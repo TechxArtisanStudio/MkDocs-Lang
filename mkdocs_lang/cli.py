@@ -1,5 +1,5 @@
 import argparse
-from mkdocs_lang.actions import newproject, config, addsite, cl, newsite, removesite
+from mkdocs_lang.actions import newproject, config, addsite, run, newsite, removesite
 import os
 
 def main(args=None):
@@ -31,7 +31,7 @@ def main(args=None):
     addsite_parser.add_argument('--dry-run', '-d', action='store_true', help='Add repository to mkdocs-lang.yml without cloning')
 
     # Custom Command Line action
-    cl_parser = subparsers.add_parser('cl', help='Execute a custom command across all MkDocs projects.')
+    cl_parser = subparsers.add_parser('run', help='Execute a custom command across all MkDocs projects.')
     cl_parser.add_argument('command', help='The custom command to execute')
     cl_parser.add_argument('--project', '-p', help='Path to the main project if not in current directory')
     cl_parser.add_argument('-y', action='store_true', help='Automatically confirm execution without prompting')
@@ -57,8 +57,8 @@ def main(args=None):
             addsite.clone_repo(args.url_repo, args.lang, args.project, args.dry_run)
         else:
             addsite.clone_repos_from_mkdocs_lang(args.project)
-    elif args.action == 'cl':
-        cl.execute_command(args.command, args.project, args.y)
+    elif args.action == 'run':
+        run.execute_command(args.command, args.project, args.y)
     elif args.action == 'removesite':
         removesite.remove_site(args.site_name, args.project)
 

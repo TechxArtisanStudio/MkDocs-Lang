@@ -73,9 +73,9 @@ mklang addsite <repo-url> -l <language-code> -p <path-to-main-project>
 Run a custom command across all MkDocs sites within a specified directory structure.
 
 ```bash
-mklang cl "<the-customized-command-line>" --project /path/to/website-project
+mklang run "<the-customized-command-line>" --project /path/to/website-project
 # or using short options
-mklang cl "<the-customized-command-line>" -p /path/to/website-project
+mklang run "<the-customized-command-line>" -p /path/to/website-project
 ```
 
 ### Remove a MkDocs Site
