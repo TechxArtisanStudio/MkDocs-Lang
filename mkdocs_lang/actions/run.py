@@ -3,14 +3,16 @@ import subprocess
 import yaml
 from mkdocs_lang.utils import find_main_project_path
 
-def execute_command(command, main_project_path=None, auto_confirm=False):
-    # Use the utility function to determine the main project path only if not provided
+def execute_command(command, relative_path=None, main_project_path=None, auto_confirm=False):
+    # Determine the main project path if not provided
     if main_project_path is None:
         main_project_path = find_main_project_path()
     
     if main_project_path is None:
         print("\033[91mError: Main project path could not be determined.\033[0m")
         return
+
+    # print(f"Debug: Main project path is {main_project_path}")
 
     mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
     
@@ -32,11 +34,22 @@ def execute_command(command, main_project_path=None, auto_confirm=False):
         else:
             print(f"\033[93mWarning: Site path {site_path} does not exist.\033[0m")
 
-    # Print the command and paths for confirmation
+    # print(f"Debug: Site paths are {site_paths}")
+
+    # Determine the execution paths
+    execution_paths = []
+    for site_path in site_paths:
+        if relative_path:
+            exec_path = os.path.join(site_path, relative_path)
+        else:
+            exec_path = site_path
+        execution_paths.append(exec_path)
+
+    # Print the execution paths for confirmation
     if not auto_confirm:
         print(f"\033[94mThe following command will be executed in each site directory:\033[0m\n{command}")
-        print("\033[94mThe command will be applied to the following directories:\033[0m")
-        for path in site_paths:
+        print("\033[94mThe command will be executed in the following directories:\033[0m")
+        for path in execution_paths:
             print(f"  - {path}")
         confirm = input("\033[94mDo you want to proceed? (y/n): \033[0m").strip().lower()
         if confirm != 'y':
@@ -44,6 +57,10 @@ def execute_command(command, main_project_path=None, auto_confirm=False):
             return
 
     # Execute the command in each site directory
-    for site_path in site_paths:
-        print(f"\033[92mExecuting command in {site_path}: {command}\033[0m")
-        subprocess.run(command, shell=True, cwd=site_path) 
+    for exec_path in execution_paths:
+        try:
+            # print(f"Debug: Executing command in {exec_path}")
+            subprocess.run(command, shell=True, cwd=exec_path, check=True)
+            print(f"\033[92mExecuted command in {exec_path}\033[0m")
+        except subprocess.CalledProcessError as e:
+            print(f"\033[91mError executing command in {exec_path}: {e}\033[0m") 

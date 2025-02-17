@@ -33,6 +33,7 @@ def main(args=None):
     # Custom Command Line action
     cl_parser = subparsers.add_parser('run', help='Execute a custom command across all MkDocs projects.')
     cl_parser.add_argument('command', help='The custom command to execute')
+    cl_parser.add_argument('relative_path', nargs='?', default=None, help='Relative path within MkDocs sites')
     cl_parser.add_argument('--project', '-p', help='Path to the main project if not in current directory')
     cl_parser.add_argument('-y', action='store_true', help='Automatically confirm execution without prompting')
 
@@ -76,7 +77,7 @@ def main(args=None):
         else:
             addsite.clone_repos_from_mkdocs_lang(args.project)
     elif args.action == 'run':
-        run.execute_command(args.command, args.project, args.y)
+        run.execute_command(args.command, args.relative_path, args.project, args.y)
     elif args.action == 'removesite':
         removesite.remove_site(args.site_name, args.project)
     elif args.action == 'copy':

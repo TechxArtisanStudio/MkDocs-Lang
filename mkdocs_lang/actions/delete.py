@@ -12,7 +12,7 @@ def delete_item(target_path, relative_path=None, main_project_path=None, is_dire
         print("\033[91mError: Main project path could not be determined.\033[0m")
         return
 
-    print(f"Debug: Main project path is {main_project_path}")
+    # print(f"Debug: Main project path is {main_project_path}")
 
     mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
     
@@ -34,7 +34,7 @@ def delete_item(target_path, relative_path=None, main_project_path=None, is_dire
         else:
             print(f"\033[93mWarning: Site path {site_path} does not exist.\033[0m")
 
-    print(f"Debug: Site paths are {site_paths}")
+    # print(f"Debug: Site paths are {site_paths}")
 
     # Determine the relative path for the target
     if relative_path:
@@ -66,7 +66,7 @@ def delete_item(target_path, relative_path=None, main_project_path=None, is_dire
         print("\033[94mThe item will be deleted from the following directories:\033[0m")
         for path in site_paths:
             full_target_path = os.path.join(path, target_rel_path)
-            print(f"Debug: Full target path for site {path} is {full_target_path}")
+            # print(f"Debug: Full target path for site {path} is {full_target_path}")
             print(f"  - {full_target_path}")
         confirm = input("\033[94mDo you want to proceed? (y/n): \033[0m").strip().lower()
         if confirm != 'y':
@@ -77,7 +77,7 @@ def delete_item(target_path, relative_path=None, main_project_path=None, is_dire
     for site_path in site_paths:
         try:
             full_target_path = os.path.join(site_path, target_rel_path)
-            print(f"Debug: Attempting to delete {full_target_path}")
+            # print(f"Debug: Attempting to delete {full_target_path}")
             if is_directory:
                 shutil.rmtree(full_target_path)
             else:
