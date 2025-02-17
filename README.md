@@ -1,6 +1,6 @@
-# mkdocs-lang
+# MkDocs Multi-Language Project Manager
 
-`mkdocs-lang` is a Python-based CLI tool designed to simplify the management of multi-language MkDocs projects. It automates the creation of projects containing multiple language-specific MkDocs sites, file synchronization, deletion, Git operations, and configuration.
+This tool helps manage multi-language MkDocs projects, allowing you to create, configure, clone, and manage multiple MkDocs sites within a single project structure.
 
 ## Overview
 
@@ -36,56 +36,71 @@ This structure allows for centralized management of all language-specific MkDocs
 
 ## Installation
 
-To install `mkdocs-lang`, clone the repository and install the package using pip:
+To install the tool, clone the repository and install the dependencies:
 
 ```bash
-git clone https://github.com/your-github/mkdocs-lang.git
-cd mkdocs-lang
-pip install .
+git clone <repository-url>
+cd <repository-directory>
+pip install -r requirements.txt
 ```
 
-## Key Actions
+## Usage
 
-- **`newproject`**: Creates a new project folder with a `mkdocs-lang.yml` file. [Learn more](docs/1-create-a-new-project.md)
-- **`new`**: Creates a new MkDocs site. [Learn more](docs/2-create-a-brand-new-mkdocs-project.md)
-- **`gitclone`**: Clones a GitHub repository into the main project and updates configuration. [Learn more](docs/3-add-github-repos.md)
-- **`cl`**: Executes a custom command across all MkDocs sites. [Learn more](docs/4-add-universal-action.md)
-- **`config`**: Manages the list of MkDocs sites and updates GitHub account.
-- **`copy`**: Copies files across all MkDocs sites.
-- **`del`**: Deletes a file or directory across sites.
-- **`git`**: Runs Git actions across all sites.
+The tool provides several command-line actions to manage your MkDocs projects:
 
-## Quick Start
+### Create a New Project
 
-Here are some basic command lines to get you started with `mkdocs-lang`:
+Initialize a new MkDocs multi-language project directory.
 
-- **Create a New Project**
+```bash
+mklang newproject --project /path/to/new/project/website-project --github <github-account>
+# or using short options
+mklang newproject -p /path/to/new/project/website-project -g <github-account>
+```
 
-  ```bash
-  mklang newproject --project /path/to/new/project/website-project --github <github-account>
-  ```
+### Create a New MkDocs Site
 
-- **Add a New MkDocs Site**
+Add a new MkDocs site to your multi-language setup.
 
-  ```bash
-  mklang new <mkdocs-site> --project <path-to-the-mainproject> --lang <language-code>
-  ```
+```bash
+mklang new <mkdocs-site> --project <path-to-the-mainproject> --lang <language-code>
+# or using short options
+mklang new <mkdocs-site> -p <path-to-the-mainproject> -l <language-code>
+```
 
-- **Clone a GitHub Repository**
+### Clone GitHub Repositories
 
-  ```bash
-  mklang gitclone <repo-url> --lang <language-code> --project <path-to-main-project>
-  ```
+Clone an existing GitHub repository into your MkDocs project setup.
 
-- **Execute a Custom Command Across All Sites**
+```bash
+mklang gitclone <repo-url> --lang <language-code> --project <path-to-main-project>
+# or using short options
+mklang gitclone <repo-url> -l <language-code> -p <path-to-main-project>
+```
 
-  ```bash
-  mklang cl "<the-customized-command-line>" --project /path/to/website-project
-  ```
+### Execute a Custom Command
+
+Run a custom command across all MkDocs sites within a specified directory structure.
+
+```bash
+mklang cl "<the-customized-command-line>" --project /path/to/website-project
+# or using short options
+mklang cl "<the-customized-command-line>" -p /path/to/website-project
+```
+
+### Remove a MkDocs Site
+
+Remove a MkDocs site from the main project.
+
+```bash
+mklang removesite <site-name> --project <path-to-main-project>
+# or using short options
+mklang removesite <site-name> -p <path-to-main-project>
+```
 
 ## Contributing
 
-Contributions are welcome! Please fork the repository and submit a pull request for any improvements or bug fixes.
+Contributions are welcome! Please fork the repository and submit a pull request with your changes.
 
 ## License
 

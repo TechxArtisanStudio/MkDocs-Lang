@@ -6,6 +6,8 @@ The `cl` action allows you to execute a custom command across all MkDocs sites w
 
 ```bash
 mklang cl "<the-customized-command-line>" --project /path/to/website-project
+# or using short options
+mklang cl "<the-customized-command-line>" -p /path/to/website-project
 ```
 
 #### Examples
@@ -14,6 +16,8 @@ mklang cl "<the-customized-command-line>" --project /path/to/website-project
 
    ```bash
    mklang cl "git pull" --project /path/to/website-project
+   # or using short options
+   mklang cl "git pull" -p /path/to/website-project
    ```
 
 2. **Create a File in Each Site's Subdirectory**

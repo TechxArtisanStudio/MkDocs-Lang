@@ -6,10 +6,12 @@ The `gitclone` action clones an existing GitHub repository into your MkDocs proj
 
 ```bash
 mklang gitclone <repo-url> --lang <language-code> --project <path-to-main-project>
+# or using short options
+mklang gitclone <repo-url> -l <language-code> -p <path-to-main-project>
 ```
 
 - `repo-url` can be in SSH or HTTPS format.
-- `--lang` specifies the language code for the site.
+- `--lang` (`-l`) specifies the language code for the site.
 
 #### What It Does
 
@@ -23,4 +25,6 @@ To clone a repository:
 
 ```bash
 mklang gitclone git@github.com:TechxArtisanStudio/Openterface.git --lang en --project /path/to/mkdocs-project
+# or using short options
+mklang gitclone git@github.com:TechxArtisanStudio/Openterface.git -l en -p /path/to/mkdocs-project
 ``` 

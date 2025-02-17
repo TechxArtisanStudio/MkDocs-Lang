@@ -6,9 +6,11 @@ The `new` action adds a new MkDocs site to your multi-language setup.
 
 ```bash
 mklang new <mkdocs-site> --project <path-to-the-mainproject> --lang <language-code>
+# or using short options
+mklang new <mkdocs-site> -p <path-to-the-mainproject> -l <language-code>
 ```
 
-- `--lang` defaults to `en`.
+- `--lang` (`-l`) defaults to `en`.
 
 #### Language Code Examples
 

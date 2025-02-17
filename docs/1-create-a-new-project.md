@@ -6,9 +6,11 @@ The `newproject` action initializes a new MkDocs multi-language project director
 
 ```bash
 mklang newproject --project /path/to/new/project/website-project --github <github-account>
+# or using short options
+mklang newproject -p /path/to/new/project/website-project -g <github-account>
 ```
 
-- `--github` is optional. If specified, it writes the GitHub account into `mkdocs-lang.yml`. Otherwise, it defaults to 'your-github-account'.
+- `--github` (`-g`) is optional. If specified, it writes the GitHub account into `mkdocs-lang.yml`. Otherwise, it defaults to 'your-github-account'.
 - You can update the GitHub account information for `mkdocs-lang.yml` later by using the `config` action.
 
 #### What It Does
