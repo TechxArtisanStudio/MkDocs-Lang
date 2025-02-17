@@ -38,12 +38,27 @@ def execute_command(command, relative_path=None, main_project_path=None, auto_co
 
     # Determine the execution paths
     execution_paths = []
-    for site_path in site_paths:
-        if relative_path:
+    if relative_path:
+        # Use the specified relative path
+        for site_path in site_paths:
             exec_path = os.path.join(site_path, relative_path)
+            execution_paths.append(exec_path)
+    else:
+        # Calculate the relative path from the current working directory
+        current_dir = os.getcwd()
+        for site_path in site_paths:
+            if current_dir.startswith(site_path):
+                rel_path = os.path.relpath(current_dir, start=site_path)
+                break
         else:
-            exec_path = site_path
-        execution_paths.append(exec_path)
+            print("\033[91mError: Current directory is not within any MkDocs site.\033[0m")
+            return
+
+        # Apply the relative path to all sites
+        for site_path in site_paths:
+            exec_path = os.path.join(site_path, rel_path)
+            execution_paths.append(exec_path)
+            # print(f"Debug: Calculated execution path for site {site_path} is {exec_path}")
 
     # Print the execution paths for confirmation
     if not auto_confirm:
