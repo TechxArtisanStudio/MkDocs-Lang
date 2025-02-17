@@ -22,11 +22,12 @@ def clone_repo(repo_url, lang='en', main_project_path=None, dry_run=False):
     project_path = os.path.join(main_project_path, project_name)
 
     if not dry_run:
-        result = subprocess.run(['git', 'clone', repo_url, project_path], capture_output=True, text=True)
+        # Run the git clone command without capturing output
+        result = subprocess.run(['git', 'clone', repo_url, project_path])
         if result.returncode == 0:
             print(f"\033[92mCloned {repo_url} into {project_path}\033[0m")  # Green for success
         else:
-            print(f"\033[91mError cloning {repo_url}: {result.stderr}\033[0m")  # Red for error
+            print(f"\033[91mError cloning {repo_url}\033[0m")  # Red for error
             return
     else:
         # Print the dry-run message in yellow
@@ -58,7 +59,7 @@ def clone_repo(repo_url, lang='en', main_project_path=None, dry_run=False):
     with open(mkdocs_lang_yml_path, 'w') as f:
         yaml.safe_dump(config, f)
 
-    print(f"\033[92mAdded {project_name} to mkdocs-lang.yml with repo_url: {repo_url_https} and git_url: {repo_url}\033[0m")  # Green for success
+    print(f"Added {project_name} to mkdocs-lang.yml with repo_url: {repo_url_https} and git_url: {repo_url}")  # Success message
 
 def clone_repos_from_file(batch_file=None, main_project_path=None):
     if batch_file is None:
