@@ -64,9 +64,11 @@ mklang newproject --project /path/to/new/project/website-project --github <githu
 mklang newproject -p /path/to/new/project/website-project -g <github-account>
 ```
 
+For detailed instructions, see the [Create a New Project documentation](docs/newproject.md).
+
 ### Create a New MkDocs Site
 
-Add a new MkDocs site to your multi-language setup.
+Add a new MkDocs site to your multi-language setup. For detailed instructions, see the [Create a New MkDocs Site documentation](docs/newsite.md).
 
 ```bash
 mklang new <mkdocs-site> --project <path-to-the-mainproject> --lang <language-code>
@@ -84,6 +86,8 @@ mklang addsite <repo-url> --lang <language-code> --project <path-to-main-project
 mklang addsite <repo-url> -l <language-code> -p <path-to-main-project>
 ```
 
+For detailed instructions, see the [Add GitHub Repositories documentation](docs/addsite.md).
+
 ### Execute a Custom Command
 
 Run a custom command across all MkDocs sites within a specified directory structure.
@@ -94,6 +98,8 @@ mklang run "<the-customized-command-line>" --project /path/to/website-project
 mklang run "<the-customized-command-line>" -p /path/to/website-project
 ```
 
+For detailed instructions, see the [Universal Command Line Action documentation](docs/run.md).
+
 ### Remove a MkDocs Site
 
 Remove a MkDocs site from the main project.
@@ -103,6 +109,8 @@ mklang removesite <site-name> --project <path-to-main-project>
 # or using short options
 mklang removesite <site-name> -p <path-to-main-project>
 ```
+
+For detailed instructions, see the [Remove a MkDocs Site documentation](docs/removesite.md).
 
 ## Contributing
 
