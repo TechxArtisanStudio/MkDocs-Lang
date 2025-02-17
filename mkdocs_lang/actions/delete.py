@@ -3,7 +3,7 @@ import shutil
 import yaml
 from mkdocs_lang.utils import find_main_project_path
 
-def delete_item(target_path, main_project_path=None, is_directory=False, auto_confirm=False):
+def delete_item(target_path, relative_path=None, main_project_path=None, is_directory=False, auto_confirm=False):
     # Determine the main project path if not provided
     if main_project_path is None:
         main_project_path = find_main_project_path()
@@ -36,26 +36,29 @@ def delete_item(target_path, main_project_path=None, is_directory=False, auto_co
 
     print(f"Debug: Site paths are {site_paths}")
 
-    # Determine if target_path is absolute or relative
-    if os.path.isabs(target_path):
-        # If absolute, determine the relative path from the MkDocs site
-        for site_path in site_paths:
-            if target_path.startswith(site_path):
-                target_rel_path = os.path.relpath(target_path, start=site_path)
-                break
-        else:
-            print("\033[91mError: Target path is not within any MkDocs site.\033[0m")
-            return
+    # Determine the relative path for the target
+    if relative_path:
+        target_rel_path = os.path.join(relative_path, os.path.basename(target_path))
     else:
-        # If relative, assume it's relative to the current working directory
-        current_dir = os.getcwd()
-        for site_path in site_paths:
-            if current_dir.startswith(site_path):
-                target_rel_path = os.path.relpath(os.path.join(current_dir, target_path), start=site_path)
-                break
+        if os.path.isabs(target_path):
+            # If absolute, determine the relative path from the MkDocs site
+            for site_path in site_paths:
+                if target_path.startswith(site_path):
+                    target_rel_path = os.path.relpath(target_path, start=site_path)
+                    break
+            else:
+                print("\033[91mError: Target path is not within any MkDocs site.\033[0m")
+                return
         else:
-            print("\033[91mError: Current directory is not within any MkDocs site.\033[0m")
-            return
+            # If relative, assume it's relative to the current working directory
+            current_dir = os.getcwd()
+            for site_path in site_paths:
+                if current_dir.startswith(site_path):
+                    target_rel_path = os.path.relpath(os.path.join(current_dir, target_path), start=site_path)
+                    break
+            else:
+                print("\033[91mError: Current directory is not within any MkDocs site.\033[0m")
+                return
 
     # Print the target paths for confirmation
     if not auto_confirm:

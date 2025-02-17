@@ -43,19 +43,29 @@ def copy_item(source_path, relative_path=None, main_project_path=None, is_direct
 
     # Determine the relative path for the target
     if relative_path:
-        # Use the specified relative path
         source_rel_path = os.path.join(relative_path, os.path.basename(source_path))
     else:
-        # Determine if the source path is within any MkDocs website
-        source_rel_path = None
-        for site_path in site_paths:
-            if source_path.startswith(site_path):
-                source_rel_path = os.path.relpath(source_path, start=site_path)
-                break
+        if os.path.isabs(source_path):
+            # Determine if the source path is within any MkDocs website
+            source_rel_path = None
+            for site_path in site_paths:
+                if source_path.startswith(site_path):
+                    source_rel_path = os.path.relpath(source_path, start=site_path)
+                    break
 
-        # If the source path is not within any MkDocs website, use a default relative path
-        if source_rel_path is None:
-            source_rel_path = os.path.relpath(source_path, start=os.path.dirname(source_path))
+            # If the source path is not within any MkDocs website, use a default relative path
+            if source_rel_path is None:
+                source_rel_path = os.path.relpath(source_path, start=os.path.dirname(source_path))
+        else:
+            # If relative, assume it's relative to the current working directory
+            current_dir = os.getcwd()
+            for site_path in site_paths:
+                if current_dir.startswith(site_path):
+                    source_rel_path = os.path.relpath(os.path.join(current_dir, source_path), start=site_path)
+                    break
+            else:
+                print("\033[91mError: Current directory is not within any MkDocs site.\033[0m")
+                return
 
     # print(f"Debug: Source relative path is {source_rel_path}")
 
