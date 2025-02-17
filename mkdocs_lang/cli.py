@@ -24,7 +24,7 @@ def main(args=None):
 
     # GitClone action
     gitclone_parser = subparsers.add_parser('gitclone', help='Clone a GitHub repository into the main project.')
-    gitclone_parser.add_argument('repo_url', nargs='?', help='URL of the GitHub repository to clone')
+    gitclone_parser.add_argument('url_repo', nargs='?', help='URL of the GitHub repository to clone')
     gitclone_parser.add_argument('--lang', default='en', help='Language code for the MkDocs project')
     gitclone_parser.add_argument('--project', help='Path to the main project if not in current directory')
     gitclone_parser.add_argument('--batch', help='Path to a file containing multiple repositories to clone')
@@ -53,8 +53,8 @@ def main(args=None):
     elif args.action == 'gitclone':
         if args.batch:
             gitclone.clone_repos_from_file(args.batch, args.project)
-        elif args.repo_url:
-            gitclone.clone_repo(args.repo_url, args.lang, args.project, args.dry_run)
+        elif args.url_repo:
+            gitclone.clone_repo(args.url_repo, args.lang, args.project, args.dry_run)
         else:
             gitclone.clone_repos_from_mkdocs_lang(args.project)
     elif args.action == 'cl':

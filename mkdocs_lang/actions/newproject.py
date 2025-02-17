@@ -31,7 +31,7 @@ def create_project(main_project_path, github_account=None):
         f.write("theme:\n")
         f.write("  name: material\n")
         f.write("  language: <lang>\n")
-        f.write("repo_url: https://github.com/<github-account>/<mkdocs-project>\n")
+        f.write("url_repo: https://github.com/<github-account>/<mkdocs-project>\n")
     print(f"Created mkdocs.yml.template at {mkdocs_yml_template_path}")
 
     # Create requirements.txt

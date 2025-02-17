@@ -15,7 +15,7 @@ mklang gitclone <repo-url> --lang <language-code> --project <path-to-main-projec
 
 1. Clones the specified GitHub repository into the main project directory.
 2. Updates `mkdocs-lang.yml` with the new site's details.
-3. Converts the `repo_url` to HTTPS format in `mkdocs-lang.yml`.
+3. Converts the `url_repo` to HTTPS format in `mkdocs-lang.yml`.
 
 #### Example
 

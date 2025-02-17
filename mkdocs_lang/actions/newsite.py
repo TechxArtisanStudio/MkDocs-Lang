@@ -75,7 +75,7 @@ def create_mkdocs_project(mkdocs_site_name, lang='en', main_project_path=None):
     config['websites'].append({
         'name': mkdocs_site_name,
         'lang': lang,
-        'repo_url': f"https://github.com/{github_account}/{mkdocs_site_name}"
+        'url_repo': f"https://github.com/{github_account}/{mkdocs_site_name}"
     })
 
     with open(mkdocs_lang_yml_path, 'w') as f:
