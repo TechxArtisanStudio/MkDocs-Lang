@@ -55,6 +55,34 @@ pip install .
 - **`del`**: Deletes a file or directory across sites.
 - **`git`**: Runs Git actions across all sites.
 
+## Quick Start
+
+Here are some basic command lines to get you started with `mkdocs-lang`:
+
+- **Create a New Project**
+
+  ```bash
+  mklang newproject --project /path/to/new/project/website-project --github <github-account>
+  ```
+
+- **Add a New MkDocs Site**
+
+  ```bash
+  mklang new <mkdocs-site> --project <path-to-the-mainproject> --lang <language-code>
+  ```
+
+- **Clone a GitHub Repository**
+
+  ```bash
+  mklang gitclone <repo-url> --lang <language-code> --project <path-to-main-project>
+  ```
+
+- **Execute a Custom Command Across All Sites**
+
+  ```bash
+  mklang cl "<the-customized-command-line>" --project /path/to/website-project
+  ```
+
 ## Contributing
 
 Contributions are welcome! Please fork the repository and submit a pull request for any improvements or bug fixes.
