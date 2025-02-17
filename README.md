@@ -34,16 +34,6 @@ This structure allows for centralized management of all language-specific MkDocs
 - **Universal command execution** across all MkDocs sites.
 - **Installation as a Python package** (`pip install mkdocs-lang`) for system-wide CLI usage.
 
-## Installation
-
-To install the tool, clone the repository and install the dependencies:
-
-```bash
-git clone <repository-url>
-cd <repository-directory>
-pip install -r requirements.txt
-```
-
 ## Usage
 
 The tool provides several command-line actions to manage your MkDocs projects:
@@ -73,9 +63,9 @@ mklang new <mkdocs-site> -p <path-to-the-mainproject> -l <language-code>
 Clone an existing GitHub repository into your MkDocs project setup.
 
 ```bash
-mklang gitclone <repo-url> --lang <language-code> --project <path-to-main-project>
+mklang addsite <repo-url> --lang <language-code> --project <path-to-main-project>
 # or using short options
-mklang gitclone <repo-url> -l <language-code> -p <path-to-main-project>
+mklang addsite <repo-url> -l <language-code> -p <path-to-main-project>
 ```
 
 ### Execute a Custom Command

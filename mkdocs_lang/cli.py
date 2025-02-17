@@ -1,5 +1,5 @@
 import argparse
-from mkdocs_lang.actions import newproject, config, gitclone, cl, newsite, removesite
+from mkdocs_lang.actions import newproject, config, addsite, cl, newsite, removesite
 import os
 
 def main(args=None):
@@ -22,13 +22,13 @@ def main(args=None):
     config_parser.add_argument('--project', '-p', help='Path to the main project')
     config_parser.add_argument('--github', '-g', required=True, help='New GitHub account for repository URLs')
 
-    # GitClone action
-    gitclone_parser = subparsers.add_parser('gitclone', help='Clone a GitHub repository into the main project.')
-    gitclone_parser.add_argument('url_repo', nargs='?', help='URL of the GitHub repository to clone')
-    gitclone_parser.add_argument('--lang', '-l', default='en', help='Language code for the MkDocs project')
-    gitclone_parser.add_argument('--project', '-p', help='Path to the main project if not in current directory')
-    gitclone_parser.add_argument('--batch', '-b', help='Path to a file containing multiple repositories to clone')
-    gitclone_parser.add_argument('--dry-run', '-d', action='store_true', help='Add repository to mkdocs-lang.yml without cloning')
+    # addsite action
+    addsite_parser = subparsers.add_parser('addsite', help='Clone a GitHub repository into the main project.')
+    addsite_parser.add_argument('url_repo', nargs='?', help='URL of the GitHub repository to clone')
+    addsite_parser.add_argument('--lang', '-l', default='en', help='Language code for the MkDocs project')
+    addsite_parser.add_argument('--project', '-p', help='Path to the main project if not in current directory')
+    addsite_parser.add_argument('--batch', '-b', help='Path to a file containing multiple repositories to clone')
+    addsite_parser.add_argument('--dry-run', '-d', action='store_true', help='Add repository to mkdocs-lang.yml without cloning')
 
     # Custom Command Line action
     cl_parser = subparsers.add_parser('cl', help='Execute a custom command across all MkDocs projects.')
@@ -50,13 +50,13 @@ def main(args=None):
         newsite.create_mkdocs_project(args.mkdocs_project, args.lang, args.project)
     elif args.action == 'config':
         config.update_github_account(args.project, args.github)
-    elif args.action == 'gitclone':
+    elif args.action == 'addsite':
         if args.batch:
-            gitclone.clone_repos_from_file(args.batch, args.project)
+            addsite.clone_repos_from_file(args.batch, args.project)
         elif args.url_repo:
-            gitclone.clone_repo(args.url_repo, args.lang, args.project, args.dry_run)
+            addsite.clone_repo(args.url_repo, args.lang, args.project, args.dry_run)
         else:
-            gitclone.clone_repos_from_mkdocs_lang(args.project)
+            addsite.clone_repos_from_mkdocs_lang(args.project)
     elif args.action == 'cl':
         cl.execute_command(args.command, args.project, args.y)
     elif args.action == 'removesite':

@@ -1,13 +1,13 @@
 ## Add GitHub Repositories
 
-The `gitclone` action clones an existing GitHub repository into your MkDocs project setup.
+The `addsite` action clones an existing GitHub repository into your MkDocs project setup.
 
 #### Usage
 
 ```bash
-mklang gitclone <repo-url> --lang <language-code> --project <path-to-main-project>
+mklang addsite <repo-url> --lang <language-code> --project <path-to-main-project>
 # or using short options
-mklang gitclone <repo-url> -l <language-code> -p <path-to-main-project>
+mklang addsite <repo-url> -l <language-code> -p <path-to-main-project>
 ```
 
 - `repo-url` can be in SSH or HTTPS format.
@@ -24,7 +24,7 @@ mklang gitclone <repo-url> -l <language-code> -p <path-to-main-project>
 To clone a repository:
 
 ```bash
-mklang gitclone git@github.com:TechxArtisanStudio/Openterface.git --lang en --project /path/to/mkdocs-project
+mklang addsite git@github.com:TechxArtisanStudio/Openterface.git --lang en --project /path/to/mkdocs-project
 # or using short options
-mklang gitclone git@github.com:TechxArtisanStudio/Openterface.git -l en -p /path/to/mkdocs-project
+mklang addsite git@github.com:TechxArtisanStudio/Openterface.git -l en -p /path/to/mkdocs-project
 ``` 
