@@ -1,5 +1,5 @@
 import argparse
-from mkdocs_lang.actions import newproject, config, addsite, run, newsite, removesite, copy
+from mkdocs_lang.actions import newproject, config, addsite, run, newsite, removesite, copy, delete
 import os
 
 def main(args=None):
@@ -51,6 +51,13 @@ def main(args=None):
     copy_parser.add_argument('--force', '-f', action='store_true', help='Overwrite existing files without prompting')
     copy_parser.add_argument('--backup', '-b', action='store_true', help='Create a backup of existing files before overwriting')
 
+    # Delete action
+    del_parser = subparsers.add_parser('del', help='Delete a file or folder across all MkDocs projects.')
+    del_parser.add_argument('target', help='Path to the file or folder to delete')
+    del_parser.add_argument('--project', '-p', help='Path to the main project if not in current directory')
+    del_parser.add_argument('--dir', '-d', action='store_true', help='Indicate if the target is a directory')
+    del_parser.add_argument('-y', action='store_true', help='Automatically confirm execution without prompting')
+
     # Parse arguments
     args = parser.parse_args(args)
 
@@ -73,6 +80,8 @@ def main(args=None):
         removesite.remove_site(args.site_name, args.project)
     elif args.action == 'copy':
         copy.copy_item(args.source, args.relative_path, args.project, args.dir, args.y, args.force, args.backup)
+    elif args.action == 'del':
+        delete.delete_item(args.target, args.project, args.dir, args.y)
 
 if __name__ == '__main__':
     main()

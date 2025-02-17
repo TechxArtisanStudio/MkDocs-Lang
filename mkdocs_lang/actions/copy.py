@@ -17,7 +17,7 @@ def copy_item(source_path, relative_path=None, main_project_path=None, is_direct
         print("\033[91mError: Main project path could not be determined.\033[0m")
         return
 
-    print(f"Debug: Main project path is {main_project_path}")
+    # print(f"Debug: Main project path is {main_project_path}")
 
     mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
     
@@ -39,7 +39,7 @@ def copy_item(source_path, relative_path=None, main_project_path=None, is_direct
         else:
             print(f"\033[93mWarning: Site path {site_path} does not exist.\033[0m")
 
-    print(f"Debug: Site paths are {site_paths}")
+    # print(f"Debug: Site paths are {site_paths}")
 
     # Determine the relative path for the target
     if relative_path:
@@ -57,7 +57,7 @@ def copy_item(source_path, relative_path=None, main_project_path=None, is_direct
         if source_rel_path is None:
             source_rel_path = os.path.relpath(source_path, start=os.path.dirname(source_path))
 
-    print(f"Debug: Source relative path is {source_rel_path}")
+    # print(f"Debug: Source relative path is {source_rel_path}")
 
     # Print the source and target paths for confirmation
     if not auto_confirm:
@@ -66,7 +66,7 @@ def copy_item(source_path, relative_path=None, main_project_path=None, is_direct
         for path in site_paths:
             # Correctly combine the site path with the relative path
             target_path = os.path.join(path, source_rel_path.lstrip('/'))
-            print(f"Debug: Target path for site {path} is {target_path}")
+            # print(f"Debug: Target path for site {path} is {target_path}")
             if target_path == source_path:
                 print(f"  - {target_path} \033[93m*(source path, skipping)\033[0m")
             else:
@@ -80,9 +80,9 @@ def copy_item(source_path, relative_path=None, main_project_path=None, is_direct
     for site_path in site_paths:
         try:
             target_path = os.path.join(site_path, source_rel_path.lstrip('/'))
-            print(f"Debug: Copying to target path {target_path}")
+            # print(f"Debug: Copying to target path {target_path}")
             if target_path == source_path:
-                print(f"Debug: Skipping copy to source path {source_path}")
+                # print(f"Debug: Skipping copy to source path {source_path}")
                 continue  # Skip copying to the source path
 
             target_dir = os.path.dirname(target_path)
