@@ -1,5 +1,5 @@
 import argparse
-from mkdocs_lang.actions import newproject, config, addsite, run, newsite, removesite, copy, delete
+from mkdocs_lang.actions import newproject, config, addsite, run, newsite, removesite, copy, delete, git
 import os
 
 def main(args=None):
@@ -60,6 +60,12 @@ def main(args=None):
     del_parser.add_argument('--dir', '-d', action='store_true', help='Indicate if the target is a directory')
     del_parser.add_argument('-y', action='store_true', help='Automatically confirm execution without prompting')
 
+    # Git action
+    git_parser = subparsers.add_parser('git', help='Execute a git command across all MkDocs projects.')
+    git_parser.add_argument('git_command', help='The git command to execute (e.g., "status", "pull")')
+    git_parser.add_argument('--project', '-p', help='Path to the main project if not in current directory')
+    git_parser.add_argument('-y', action='store_true', help='Automatically confirm execution without prompting')
+
     # Parse arguments
     args = parser.parse_args(args)
 
@@ -84,6 +90,8 @@ def main(args=None):
         copy.copy_item(args.source, args.relative_path, args.project, args.dir, args.y, args.force, args.backup)
     elif args.action == 'del':
         delete.delete_item(args.target, args.relative_path, args.project, args.dir, args.y)
+    elif args.action == 'git':
+        git.execute_git_command(args.git_command, args.project, args.y)
 
 if __name__ == '__main__':
     main()
