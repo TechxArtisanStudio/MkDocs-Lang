@@ -32,7 +32,23 @@ This structure allows for centralized management of all language-specific MkDocs
 - **Automated Git actions** like clone, status, pull, and sync (commit & push).
 - **Configurable list of MkDocs sites** that allows each site to be stored in any path.
 - **Universal command execution** across all MkDocs sites.
-- **Installation as a Python package** (`pip install mkdocs-lang`) for system-wide CLI usage.
+
+## Installation
+
+To install this tool, you need to clone the repository and use `pip` to install it locally. Follow these steps:
+
+1. Clone the repository to your local machine:
+   ```bash
+   git clone git@github.com:TechxArtisanStudio/MkDocs-Lang.git
+   cd MkDocs-Lang
+   ```
+
+2. Install the package using `pip`:
+   ```bash
+   pip install .
+   ```
+
+This will make the `mklang` command available for system-wide CLI usage.
 
 ## Usage
 
