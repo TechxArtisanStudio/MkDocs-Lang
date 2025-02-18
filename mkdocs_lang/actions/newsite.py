@@ -1,21 +1,14 @@
 import os
 import subprocess
 import yaml
-from mkdocs_lang.utils import get_venv_executable
-
-# List of supported language codes from MkDocs Material
-SUPPORTED_LANGUAGES = {
-    'af', 'sq', 'ar', 'hy', 'az', 'ms', 'eu', 'be', 'bn', 'bg', 'my', 'ca', 'zh', 'zh-TW', 'zh-Hant',
-    'hr', 'cs', 'da', 'nl', 'en', 'eo', 'et', 'fi', 'fr', 'gl', 'ka', 'de', 'el', 'he', 'hi', 'hu',
-    'is', 'id', 'it', 'ja', 'kn', 'ko', 'ku-IQ', 'lv', 'lt', 'lb', 'mk', 'mn', 'nb', 'nn', 'fa',
-    'pl', 'pt', 'pt-BR', 'ro', 'ru', 'sa', 'sr', 'sh', 'si', 'sk', 'sl', 'es', 'sv', 'tl', 'ta',
-    'te', 'th', 'tr', 'uk', 'ur', 'uz', 'vi'
-}
+from mkdocs_lang.utils import get_venv_executable, validate_language_code
 
 def create_mkdocs_project(mkdocs_site_name, lang='en', main_project_path=None):
     # Validate the language code
-    if lang not in SUPPORTED_LANGUAGES:
-        print(f"Error: Unsupported language code '{lang}'. Please use one of the supported language codes.")
+    try:
+        validate_language_code(lang)
+    except ValueError as e:
+        print(e)
         return
 
     github_account = 'your-github-account'  # Default value

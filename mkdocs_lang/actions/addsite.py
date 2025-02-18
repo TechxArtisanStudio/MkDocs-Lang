@@ -1,8 +1,16 @@
 import os
 import subprocess
 import yaml
+from mkdocs_lang.utils import validate_language_code
 
 def clone_repo(url_repo, lang='en', main_project_path=None, dry_run=False):
+    # Validate the language code
+    try:
+        validate_language_code(lang)
+    except ValueError as e:
+        print(e)
+        return
+
     mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
     
     if not os.path.exists(mkdocs_lang_yml_path):
@@ -17,7 +25,7 @@ def clone_repo(url_repo, lang='en', main_project_path=None, dry_run=False):
 
     # Check if the site already exists in the configuration
     if any(site['name'] == site_name for site in config['websites']):
-        print(f"\033[93mWarning: Site {site_name} already exists in mkdocs-lang.yml.\033[0m")  # Yellow for warning
+        print(f"\033[93mWarning: Site {site_name} already exists in mkdocs-lang.yml. Skipping...\033[0m")  # Yellow for warning
         return
 
     # Handle dry-run by adding to repos.txt

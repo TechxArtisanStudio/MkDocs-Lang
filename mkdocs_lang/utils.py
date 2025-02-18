@@ -125,3 +125,19 @@ def validate_and_analyze_project_path(project_path):
     with change_directory(project_path):
         # Analyze the project structure
         return analyze_project_structure()
+
+# List of supported language codes from MkDocs Material
+SUPPORTED_LANGUAGES = {
+    'af', 'sq', 'ar', 'hy', 'az', 'ms', 'eu', 'be', 'bn', 'bg', 'my', 'ca', 'zh', 'zh-TW', 'zh-Hant',
+    'hr', 'cs', 'da', 'nl', 'en', 'eo', 'et', 'fi', 'fr', 'gl', 'ka', 'de', 'el', 'he', 'hi', 'hu',
+    'is', 'id', 'it', 'ja', 'kn', 'ko', 'ku-IQ', 'lv', 'lt', 'lb', 'mk', 'mn', 'nb', 'nn', 'fa',
+    'pl', 'pt', 'pt-BR', 'ro', 'ru', 'sa', 'sr', 'sh', 'si', 'sk', 'sl', 'es', 'sv', 'tl', 'ta',
+    'te', 'th', 'tr', 'uk', 'ur', 'uz', 'vi'
+}
+
+def validate_language_code(lang):
+    """
+    Validate the language code against the list of supported languages.
+    """
+    if lang not in SUPPORTED_LANGUAGES:
+        raise ValueError(f"Error: Unsupported language code '{lang}'. Please use one of the supported language codes.")
