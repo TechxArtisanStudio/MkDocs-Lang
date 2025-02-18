@@ -1,9 +1,12 @@
 import argparse
+import logging
 from mkdocs_lang.actions import newproject, config, addsite, run, newsite, removesite, copy, delete, git
-import os
-from mkdocs_lang.utils import analyze_project_structure, validate_and_analyze_project_path  # Import the functions
+from mkdocs_lang.utils import analyze_project_structure, validate_and_analyze_project_path
 
-def main(args=None):
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+
+def setup_parser():
     parser = argparse.ArgumentParser(description='Manage multi-language MkDocs projects.')
     subparsers = parser.add_subparsers(dest='action')
 
@@ -23,7 +26,7 @@ def main(args=None):
     config_parser.add_argument('--project', '-p', help='Path to the main project')
     config_parser.add_argument('--github', '-g', required=True, help='New GitHub account for repository URLs')
 
-    # addsite action
+    # Addsite action
     addsite_parser = subparsers.add_parser('addsite', help='Clone a GitHub repository into the main project.')
     addsite_parser.add_argument('url_repo', nargs='?', help='URL of the GitHub repository to clone')
     addsite_parser.add_argument('--lang', '-l', default='en', help='Language code for the MkDocs project')
@@ -67,46 +70,76 @@ def main(args=None):
     git_parser.add_argument('--project', '-p', help='Path to the main project if not in current directory')
     git_parser.add_argument('-y', action='store_true', help='Automatically confirm execution without prompting')
 
-    # Parse arguments
-    args = parser.parse_args(args)
-    
-    if args.action == 'newproject':
-        newproject.create_project(args.project, args.github)
-    else:
-        # Use the specified project path if provided
-        if args.project:
-            main_project_path, is_inside_mkdocs_website, combined_paths = validate_and_analyze_project_path(args.project)
-        else:
-            # Analyze the project structure from the current directory
-            main_project_path, is_inside_mkdocs_website, combined_paths = analyze_project_structure()
-        
-        if main_project_path is None:
-            print("\033[91mError: mkdocs-lang.yml not found. Please specify the --project path.\033[0m")
-            return
+    return parser
 
-        # Pass the main_project_path and other outputs to each action
-        if args.action == 'newsite':
-            newsite.create_mkdocs_project(args.mkdocs_project, args.lang, main_project_path)
-        elif args.action == 'config':
-            config.update_github_account(main_project_path, args.github)
-        elif args.action == 'addsite':
-            if args.batch is not None:
-                batch_file = args.batch if isinstance(args.batch, str) else None
-                addsite.clone_repos_from_file(batch_file, main_project_path)
-            elif args.url_repo:
-                addsite.clone_repo(args.url_repo, args.lang, main_project_path, args.dry_run)
-            else:
-                addsite.clone_repos_from_mkdocs_lang(main_project_path)
-        elif args.action == 'run':
-            run.execute_command(args.command, args.relative_path, main_project_path, args.y)
-        elif args.action == 'removesite':
-            removesite.remove_site(args.site_name, main_project_path)
-        elif args.action == 'copy':
-            copy.copy_item(args.source, args.relative_path, main_project_path, args.dir, args.y, args.force, args.backup)
-        elif args.action == 'del':
-            delete.delete_item(args.target, args.relative_path, main_project_path, args.dir, args.y)
-        elif args.action == 'git':
-            git.execute_git_command(args.git_command, main_project_path, args.y)
+def handle_newproject(args):
+    newproject.create_project(args.project, args.github)
+
+def handle_newsite(args, main_project_path):
+    newsite.create_mkdocs_project(args.mkdocs_project, args.lang, main_project_path)
+
+def handle_config(args, main_project_path):
+    config.update_github_account(main_project_path, args.github)
+
+def handle_addsite(args, main_project_path):
+    if args.batch is not None:
+        batch_file = args.batch if isinstance(args.batch, str) else None
+        addsite.clone_repos_from_file(batch_file, main_project_path)
+    elif args.url_repo:
+        addsite.clone_repo(args.url_repo, args.lang, main_project_path, args.dry_run)
+    else:
+        addsite.clone_repos_from_mkdocs_lang(main_project_path)
+
+def handle_run(args, main_project_path):
+    run.execute_command(args.command, args.relative_path, main_project_path, args.y)
+
+def handle_removesite(args, main_project_path):
+    removesite.remove_site(args.site_name, main_project_path)
+
+def handle_copy(args, main_project_path):
+    copy.copy_item(args.source, args.relative_path, main_project_path, args.dir, args.y, args.force, args.backup)
+
+def handle_delete(args, main_project_path):
+    delete.delete_item(args.target, args.relative_path, main_project_path, args.dir, args.y)
+
+def handle_git(args, main_project_path):
+    git.execute_git_command(args.git_command, main_project_path, args.y)
+
+def main(args=None):
+    parser = setup_parser()
+    args = parser.parse_args(args)
+
+    if args.action == 'newproject':
+        handle_newproject(args)
+        return
+
+    # Use the specified project path if provided
+    if args.project:
+        main_project_path, is_inside_mkdocs_website, combined_paths = validate_and_analyze_project_path(args.project)
+    else:
+        # Analyze the project structure from the current directory
+        main_project_path, is_inside_mkdocs_website, combined_paths = analyze_project_structure()
+
+    if main_project_path is None:
+        logging.error("mkdocs-lang.yml not found. Please specify the --project path.")
+        return
+
+    # Pass the main_project_path and other outputs to each action
+    action_handlers = {
+        'newsite': handle_newsite,
+        'config': handle_config,
+        'addsite': handle_addsite,
+        'run': handle_run,
+        'removesite': handle_removesite,
+        'copy': handle_copy,
+        'del': handle_delete,
+        'git': handle_git
+    }
+
+    if args.action in action_handlers:
+        action_handlers[args.action](args, main_project_path)
+    else:
+        logging.error("Unknown action: %s", args.action)
 
 if __name__ == '__main__':
     main()
