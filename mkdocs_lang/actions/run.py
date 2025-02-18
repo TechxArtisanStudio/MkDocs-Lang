@@ -1,6 +1,7 @@
 import os
 import subprocess
 import yaml
+import logging
 from mkdocs_lang.utils import get_valid_site_paths, analyze_project_structure
 
 def execute_command(command, relative_path=None, main_project_path=None, auto_confirm=False):
@@ -8,7 +9,7 @@ def execute_command(command, relative_path=None, main_project_path=None, auto_co
     main_project_path, is_inside_mkdocs_website, combined_paths = analyze_project_structure()
 
     if not is_inside_mkdocs_website:
-        print("\033[91mError: The current directory is not inside a MkDocs website.\033[0m")
+        logging.error("The current directory is not inside a MkDocs website.")
         return
 
     # Determine the execution paths
@@ -19,17 +20,17 @@ def execute_command(command, relative_path=None, main_project_path=None, auto_co
 
     # Print the execution paths for confirmation
     if not auto_confirm:
-        print(f"\033[94mThe following command will be executed in each site directory:\033[0m")
-        print(f"\033[93m{command}\033[0m")
-        print("\033[94mThe command will be executed in the following directories:\033[0m")
+        logging.info("The following command will be executed in each site directory:")
+        logging.info(command)
+        logging.info("The command will be executed in the following directories:")
         for path in execution_paths:
             if os.path.exists(path):
-                print(f"  - {path}")
+                logging.info(f"  - {path}")
             else:
-                print(f"  - {path} \033[93m*(directory does not exist, skipping)\033[0m")
-        confirm = input("\033[94mDo you want to proceed? (y/n): \033[0m").strip().lower()
+                logging.warning(f"  - {path} *(directory does not exist, skipping)")
+        confirm = input("Do you want to proceed? (y/n): ").strip().lower()
         if confirm != 'y':
-            print("\033[93mOperation cancelled.\033[0m")
+            logging.info("Operation cancelled.")
             return
 
     # Execute the command in each site directory
@@ -38,6 +39,6 @@ def execute_command(command, relative_path=None, main_project_path=None, auto_co
             continue  # Skip if the directory does not exist
         try:
             subprocess.run(command, shell=True, cwd=exec_path, check=True)
-            print(f"\033[92mExecuted command in {exec_path}\033[0m")
+            logging.info(f"Executed command in {exec_path}")
         except subprocess.CalledProcessError as e:
-            print(f"\033[91mError executing command in {exec_path}: {e}\033[0m") 
+            logging.error(f"Error executing command in {exec_path}: {e}") 

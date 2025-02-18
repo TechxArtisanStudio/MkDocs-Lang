@@ -1,6 +1,7 @@
 import os
 import subprocess
 import yaml
+import logging
 from mkdocs_lang.utils import get_venv_executable, validate_language_code
 
 def create_mkdocs_project(mkdocs_site_name, lang='en', main_project_path=None):
@@ -8,12 +9,12 @@ def create_mkdocs_project(mkdocs_site_name, lang='en', main_project_path=None):
     try:
         validate_language_code(lang)
     except ValueError as e:
-        print(e)
+        logging.error(e)
         return
 
     mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
     if not os.path.exists(mkdocs_lang_yml_path):
-        print(f"\033[91mError: {mkdocs_lang_yml_path} does not exist.\033[0m")
+        logging.error(f"{mkdocs_lang_yml_path} does not exist.")
         return
 
     with open(mkdocs_lang_yml_path, 'r') as f:
@@ -21,7 +22,7 @@ def create_mkdocs_project(mkdocs_site_name, lang='en', main_project_path=None):
 
     # Check if the site already exists
     if any(site['name'] == mkdocs_site_name and site['lang'] == lang for site in config['websites']):
-        print(f"\033[93mWarning: Site {mkdocs_site_name} with language {lang} already exists in mkdocs-lang.yml. Skipping...\033[0m")
+        logging.warning(f"Site {mkdocs_site_name} with language {lang} already exists in mkdocs-lang.yml. Skipping...")
         return
 
     github_account = config.get('github_account', 'your-github-account')  # Default value
@@ -33,7 +34,7 @@ def create_mkdocs_project(mkdocs_site_name, lang='en', main_project_path=None):
 
     # Create a new MkDocs site using the virtual environment's mkdocs
     subprocess.run([mkdocs_executable, 'new', mkdocs_site_path])
-    print(f"Created new MkDocs site at {mkdocs_site_path}")
+    logging.info(f"Created new MkDocs site at {mkdocs_site_path}")
 
     # Update mkdocs.yml with template
     mkdocs_yml_path = os.path.join(mkdocs_site_path, 'mkdocs.yml')
@@ -47,7 +48,7 @@ def create_mkdocs_project(mkdocs_site_name, lang='en', main_project_path=None):
 
     with open(mkdocs_yml_path, 'w') as mkdocs_yml_file:
         mkdocs_yml_file.write(mkdocs_yml_content)
-    print(f"Updated mkdocs.yml for {mkdocs_site_name}")
+    logging.info(f"Updated mkdocs.yml for {mkdocs_site_name}")
 
     # Append the new site to the websites list
     config['websites'].append({
@@ -59,4 +60,4 @@ def create_mkdocs_project(mkdocs_site_name, lang='en', main_project_path=None):
     with open(mkdocs_lang_yml_path, 'w') as f:
         yaml.safe_dump(config, f)
 
-    print(f"Added {mkdocs_site_name} to mkdocs-lang.yml")
+    logging.info(f"Added {mkdocs_site_name} to mkdocs-lang.yml")

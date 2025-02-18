@@ -1,11 +1,12 @@
 import os
 import yaml
+import logging
 
 def update_github_account(main_project_path=None, github_account=None):
     mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
     
     if not os.path.exists(mkdocs_lang_yml_path):
-        print(f"Error: {mkdocs_lang_yml_path} does not exist.")
+        logging.error(f"{mkdocs_lang_yml_path} does not exist.")
         return
 
     with open(mkdocs_lang_yml_path, 'r') as f:
@@ -18,4 +19,4 @@ def update_github_account(main_project_path=None, github_account=None):
     with open(mkdocs_lang_yml_path, 'w') as f:
         yaml.safe_dump(config, f)
 
-    print(f"Updated GitHub account to {github_account} in {mkdocs_lang_yml_path}") 
+    logging.info(f"Updated GitHub account to {github_account} in {mkdocs_lang_yml_path}") 

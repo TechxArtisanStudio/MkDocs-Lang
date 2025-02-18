@@ -1,0 +1,10 @@
+git@github.com:TechxArtisanStudio/Openterface --lang en
+git@github.com:TechxArtisanStudio/Openterface_jp --lang ja
+git@github.com:TechxArtisanStudio/Openterface_zh --lang zh
+git@github.com:TechxArtisanStudio/Openterface_ro --lang ro
+git@github.com:TechxArtisanStudio/Openterface_ko --lang ko
+git@github.com:TechxArtisanStudio/Openterface_fr --lang fr
+git@github.com:TechxArtisanStudio/Openterface_it --lang it
+git@github.com:TechxArtisanStudio/Openterface_es --lang es
+git@github.com:TechxArtisanStudio/Openterface_de --lang de
+git@github.com:TechxArtisanStudio/Openterface_pt --lang pt

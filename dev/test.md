@@ -11,7 +11,28 @@ mklang addsite -b
 
 ----
 
+cat /home/project/op-website/log/mklang.log
+
+----
+
 cd /home/project/op-website && mklang newsite Openterface_fr --lang fr
+
+mklang removesite Openterface_fr
 
 ---
 
+cd /home/project/op-website/Openterface/
+mklang run "touch test.md"
+
+cd /home/project/op-website/Openterface/docs/blog/ && mklang run "touch test.md"
+
+mklang del test.md
+
+---
+
+cd /home/project/op-website/Openterface/docs/blog/ && touch test.md && mklang copy test.md
+mklang del test.md
+
+---
+
+mklang git status

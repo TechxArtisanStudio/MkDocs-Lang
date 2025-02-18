@@ -1,6 +1,7 @@
 import os
 import shutil
 import yaml
+import logging
 from mkdocs_lang.utils import get_valid_site_paths, analyze_project_structure
 
 def delete_item(target_path, relative_path=None, main_project_path=None, is_directory=False, auto_confirm=False):
@@ -8,7 +9,7 @@ def delete_item(target_path, relative_path=None, main_project_path=None, is_dire
     main_project_path, is_inside_mkdocs_website, combined_paths = analyze_project_structure()
 
     if not is_inside_mkdocs_website:
-        print("\033[91mError: The current directory is not inside a MkDocs website.\033[0m")
+        logging.error("The current directory is not inside a MkDocs website.")
         return
 
     # Determine the execution paths
@@ -27,20 +28,21 @@ def delete_item(target_path, relative_path=None, main_project_path=None, is_dire
 
     # Print the target paths for confirmation
     if not auto_confirm:
-        print(f"\033[94mThe following item will be deleted from each site directory:\033[0m\n{target_path}")
-        print("\033[94mThe item will be deleted from the following directories:\033[0m")
+        logging.info("The following item will be deleted from each site directory:")
+        logging.info(target_path)
+        logging.info("The item will be deleted from the following directories:")
         for exec_path in execution_paths:
             full_target_path = os.path.join(exec_path, os.path.basename(target_path))
             if os.path.exists(full_target_path):
-                print(f"  - {full_target_path}")
+                logging.info(f"  - {full_target_path}")
             else:
-                print(f"  - {full_target_path} \033[93m*(file does not exist, skipping)\033[0m")
+                logging.warning(f"  - {full_target_path} *(file does not exist, skipping)")
         if not target_exists:
-            print("\033[93mWarning: None of the target files exist. Operation will be skipped.\033[0m")
+            logging.warning("None of the target files exist. Operation will be skipped.")
             return
-        confirm = input("\033[94mDo you want to proceed? (y/n): \033[0m").strip().lower()
+        confirm = input("Do you want to proceed? (y/n): ").strip().lower()
         if confirm != 'y':
-            print("\033[93mOperation cancelled.\033[0m")
+            logging.info("Operation cancelled.")
             return
 
     # Delete the item from each site directory
@@ -53,6 +55,6 @@ def delete_item(target_path, relative_path=None, main_project_path=None, is_dire
                 shutil.rmtree(full_target_path)
             else:
                 os.remove(full_target_path)
-            print(f"\033[92mDeleted {full_target_path}\033[0m")
+            logging.info(f"Deleted {full_target_path}")
         except Exception as e:
-            print(f"\033[91mError deleting from {exec_path}: {e}\033[0m") 
+            logging.error(f"Error deleting from {exec_path}: {e}") 

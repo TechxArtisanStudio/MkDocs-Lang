@@ -6,9 +6,6 @@ from difflib import get_close_matches
 import logging
 from pathlib import Path
 
-# Setup logging
-logging.basicConfig(level=logging.INFO)
-
 @contextmanager
 def change_directory(path):
     """
@@ -85,7 +82,8 @@ def calculate_combined_paths(valid_site_paths, relative_path):
         site_path = Path(site_path)
         
         combined_path = site_path / relative_path
-        combined_paths.append(combined_path)
+        if combined_path.exists():
+            combined_paths.append(combined_path)
     
     return combined_paths
 
@@ -120,7 +118,7 @@ def get_valid_site_paths(main_project_path):
     mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
     
     if not os.path.exists(mkdocs_lang_yml_path):
-        print(f"\033[91mError: {mkdocs_lang_yml_path} does not exist.\033[0m")
+        logging.error("Error: %s does not exist.", mkdocs_lang_yml_path)
         return []
 
     with open(mkdocs_lang_yml_path, 'r') as f:
@@ -133,18 +131,16 @@ def get_valid_site_paths(main_project_path):
         for site in config.get('websites', [])
     ]
 
-    # Debugging: Print the extracted site paths
-    print(f"Debug [5]: Extracted site paths: {site_paths}")
+    logging.debug("Extracted site paths: %s", site_paths)
 
     # Filter out non-existent paths
     valid_site_paths = [path for path in site_paths if os.path.exists(path)]
     
-    # Debugging: Print valid site paths
-    print(f"Debug [6]: Valid site paths: {valid_site_paths}")
+    logging.debug("Valid site paths: %s", valid_site_paths)
 
     for path in site_paths:
         if not os.path.exists(path):
-            print(f"\033[93mWarning: Site path {path} does not exist.\033[0m")
+            logging.warning("Warning: Site path %s does not exist.", path)
 
     return valid_site_paths
 
@@ -164,7 +160,7 @@ def validate_and_analyze_project_path(project_path):
     """
     mkdocs_lang_yml_path = os.path.join(project_path, 'mkdocs-lang.yml')
     if not os.path.exists(mkdocs_lang_yml_path):
-        print(f"\033[91mError: {mkdocs_lang_yml_path} does not exist. Please specify a valid mklang project path.\033[0m")
+        logging.error("Error: %s does not exist. Please specify a valid mklang project path.", mkdocs_lang_yml_path)
         return None, None, None
 
     # Use the context manager to temporarily change the directory

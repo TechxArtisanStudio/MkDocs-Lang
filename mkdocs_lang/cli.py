@@ -1,10 +1,9 @@
 import argparse
 import logging
+import os
 from mkdocs_lang.actions import newproject, config, addsite, run, newsite, removesite, copy, delete, git
 from mkdocs_lang.utils import analyze_project_structure, validate_and_analyze_project_path
-
-# Setup logging
-logging.basicConfig(level=logging.INFO)
+from mkdocs_lang.logging_config import setup_logging  # Import the logging setup
 
 def setup_parser():
     parser = argparse.ArgumentParser(description='Manage multi-language MkDocs projects.')
@@ -72,16 +71,31 @@ def setup_parser():
 
     return parser
 
+def log_action_start(action_name, details):
+    logging.info(f"----- Starting '{action_name}' -----")
+    logging.info(f"Details: {details}")
+    logging.info(f"Current working directory: {os.getcwd()}")
+
+def log_action_end(action_name):
+    logging.info(f"******* Finished '{action_name}' *******")
+
 def handle_newproject(args):
+    log_action_start('newproject', f"project path: {args.project}, GitHub account: {args.github}")
     newproject.create_project(args.project, args.github)
+    log_action_end('newproject')
 
 def handle_newsite(args, main_project_path):
+    log_action_start('newsite', f"project name: {args.mkdocs_project}, language: {args.lang}, path: {main_project_path}")
     newsite.create_mkdocs_project(args.mkdocs_project, args.lang, main_project_path)
+    log_action_end('newsite')
 
 def handle_config(args, main_project_path):
+    log_action_start('config', f"GitHub account: {args.github}, path: {main_project_path}")
     config.update_github_account(main_project_path, args.github)
+    log_action_end('config')
 
 def handle_addsite(args, main_project_path):
+    log_action_start('addsite', f"URL: {args.url_repo}, language: {args.lang}, path: {main_project_path}")
     if args.batch is not None:
         batch_file = args.batch if isinstance(args.batch, str) else None
         addsite.clone_repos_from_file(batch_file, main_project_path)
@@ -89,25 +103,46 @@ def handle_addsite(args, main_project_path):
         addsite.clone_repo(args.url_repo, args.lang, main_project_path, args.dry_run)
     else:
         addsite.clone_repos_from_mkdocs_lang(main_project_path)
+    log_action_end('addsite')
 
 def handle_run(args, main_project_path):
+    log_action_start('run', f"command: {args.command}, relative path: {args.relative_path}, path: {main_project_path}")
     run.execute_command(args.command, args.relative_path, main_project_path, args.y)
+    log_action_end('run')
 
 def handle_removesite(args, main_project_path):
+    log_action_start('removesite', f"site name: {args.site_name}, path: {main_project_path}")
     removesite.remove_site(args.site_name, main_project_path)
+    log_action_end('removesite')
 
 def handle_copy(args, main_project_path):
+    log_action_start('copy', f"source: {args.source}, relative path: {args.relative_path}, path: {main_project_path}")
     copy.copy_item(args.source, args.relative_path, main_project_path, args.dir, args.y, args.force, args.backup)
+    log_action_end('copy')
 
 def handle_delete(args, main_project_path):
+    log_action_start('delete', f"target: {args.target}, relative path: {args.relative_path}, path: {main_project_path}")
     delete.delete_item(args.target, args.relative_path, main_project_path, args.dir, args.y)
+    log_action_end('delete')
 
 def handle_git(args, main_project_path):
+    log_action_start('git', f"command: {args.git_command}, path: {main_project_path}")
     git.execute_git_command(args.git_command, main_project_path, args.y)
+    log_action_end('git')
 
 def main(args=None):
     parser = setup_parser()
     args = parser.parse_args(args)
+
+    # Determine the log directory based on the project path
+    if args.project:
+        log_dir = os.path.join(args.project, 'log')
+    else:
+        main_project_path, _, _ = analyze_project_structure()
+        log_dir = os.path.join(main_project_path, 'log') if main_project_path else 'log'
+
+    # Setup logging
+    setup_logging(log_dir)  # Initialize logging configuration with the log directory
 
     if args.action == 'newproject':
         handle_newproject(args)
