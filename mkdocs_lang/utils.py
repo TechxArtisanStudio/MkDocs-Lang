@@ -1,45 +1,58 @@
 import os
 import yaml
 
-def get_main_project_path(provided_path=None):
+def analyze_project_structure():
     """
-    Determine the main project path. If a path is provided, use it.
-    Otherwise, check if mkdocs-lang.yml exists in the current directory.
+    Analyze the project structure to find the main project path containing mkdocs-lang.yml.
+    Determine if the current working directory is inside a MkDocs website and calculate the relative path.
     """
-    if provided_path is not None:
-        return provided_path
+    # Debugging: Print the current working directory
+    print(f"Debug [1]: Current working directory = {os.getcwd()}")
 
-    if os.path.exists('mkdocs-lang.yml'):
-        return os.getcwd()
-
-    print("Error: mkdocs-lang.yml not found in the current directory. Please specify the main project path.")
-    return None
-
-def find_main_project_path():
-    """
-    Traverse up the directory tree to find the main project path containing mkdocs-lang.yml.
-    """
     current_path = os.getcwd()
+    main_project_path = None
+    is_inside_mkdocs_website = False
+    relative_path_to_mkdocs_root = None
+    combined_paths = []
+
     while current_path != os.path.dirname(current_path):  # Traverse up to the root
         mkdocs_lang_yml_path = os.path.join(current_path, 'mkdocs-lang.yml')
         if os.path.exists(mkdocs_lang_yml_path):
             with open(mkdocs_lang_yml_path, 'r') as f:
                 config = yaml.safe_load(f)
-                return config.get('main_project_path', current_path)
+                main_project_path = config.get('main_project_path', current_path)
+
+            # Debugging: Print the found path or None
+            print(f"Debug [2]: Found main_project_path = {main_project_path}")
+
+            # Check if the current directory is inside a MkDocs website
+            valid_site_paths = get_valid_site_paths(main_project_path)
+            for site_path in valid_site_paths:
+                if os.path.commonpath([os.getcwd(), site_path]) == site_path:
+                    is_inside_mkdocs_website = True
+                    relative_path_to_mkdocs_root = os.path.relpath(os.getcwd(), site_path)
+                    break
+
+            # Calculate combined paths
+            for site_path in valid_site_paths:
+                combined_path = os.path.join(site_path, relative_path_to_mkdocs_root or "")
+                if os.path.exists(combined_path):
+                    combined_paths.append(combined_path)
+
+            break
+
         current_path = os.path.dirname(current_path)
     
-    print("Error: mkdocs-lang.yml not found. Please specify the --project path.")
-    return None
+    if main_project_path is None:
+        print("Error: mkdocs-lang.yml not found. Please specify the --project path.")
+    
+    # Print the additional information
+    print(f"Debug [3]: Is inside MkDocs website: {is_inside_mkdocs_website}")
+    if is_inside_mkdocs_website:
+        print(f"Debug [4]: Relative path to MkDocs root: {relative_path_to_mkdocs_root}")
+        print(f"Debug [7]: Combined valid paths: {combined_paths}")
 
-def get_venv_executable(main_project_path, executable_name):
-    """
-    Get the path to an executable within the virtual environment.
-    """
-    venv_path = os.path.join(main_project_path, 'venv')
-    if os.name == 'nt':
-        return os.path.join(venv_path, 'Scripts', f'{executable_name}.exe')
-    else:
-        return os.path.join(venv_path, 'bin', executable_name)
+    return main_project_path, is_inside_mkdocs_website, combined_paths
 
 def get_valid_site_paths(main_project_path):
     """
@@ -55,12 +68,33 @@ def get_valid_site_paths(main_project_path):
         config = yaml.safe_load(f)
 
     # Prepare the list of site paths using the 'path' key from mkdocs-lang.yml
-    site_paths = [site['path'] for site in config.get('websites', []) if 'path' in site]
+    # If 'path' is not present, assume the directory name matches the site name
+    site_paths = [
+        os.path.join(main_project_path, site.get('path', site['name']))
+        for site in config.get('websites', [])
+    ]
+
+    # Debugging: Print the extracted site paths
+    print(f"Debug [5]: Extracted site paths: {site_paths}")
 
     # Filter out non-existent paths
     valid_site_paths = [path for path in site_paths if os.path.exists(path)]
+    
+    # Debugging: Print valid site paths
+    print(f"Debug [6]: Valid site paths: {valid_site_paths}")
+
     for path in site_paths:
         if not os.path.exists(path):
             print(f"\033[93mWarning: Site path {path} does not exist.\033[0m")
 
-    return valid_site_paths 
+    return valid_site_paths
+
+def get_venv_executable(main_project_path, executable_name):
+    """
+    Get the path to an executable within the virtual environment.
+    """
+    venv_path = os.path.join(main_project_path, 'venv')
+    if os.name == 'nt':
+        return os.path.join(venv_path, 'Scripts', f'{executable_name}.exe')
+    else:
+        return os.path.join(venv_path, 'bin', executable_name)

@@ -1,7 +1,7 @@
 import os
 import subprocess
 import yaml
-from mkdocs_lang.utils import find_main_project_path, get_valid_site_paths
+from mkdocs_lang.utils import get_valid_site_paths
 
 def execute_command(command, relative_path=None, main_project_path=None, auto_confirm=False):
     # Get valid site paths
@@ -9,16 +9,10 @@ def execute_command(command, relative_path=None, main_project_path=None, auto_co
 
     # Determine the execution paths
     execution_paths = []
-    if relative_path:
-        # Use the specified relative path
-        for site_path in site_paths:
-            exec_path = os.path.join(site_path, relative_path.lstrip('/'))  # Ensure no leading slash
-            execution_paths.append(exec_path)
-    else:
-        # Default to running in the root of each MkDocs site
-        for site_path in site_paths:
-            exec_path = os.path.join(site_path, "")
-            execution_paths.append(exec_path)
+    for site_path in site_paths:
+        # Combine the site path with the relative path to the MkDocs root
+        exec_path = os.path.join(site_path, relative_path or "")
+        execution_paths.append(exec_path)
 
     # Print the execution paths for confirmation
     if not auto_confirm:

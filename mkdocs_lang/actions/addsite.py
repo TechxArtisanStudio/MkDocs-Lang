@@ -20,11 +20,18 @@ def clone_repo(url_repo, lang='en', main_project_path=None, dry_run=False):
         print(f"\033[93mWarning: Site {site_name} already exists in mkdocs-lang.yml.\033[0m")  # Yellow for warning
         return
 
+    # Handle dry-run by adding to repos.txt
+    if dry_run:
+        repos_txt_path = os.path.join(main_project_path, 'repos.txt')
+        with open(repos_txt_path, 'a') as f:
+            f.write(f"{url_repo} --lang={lang}\n")
+        print(f"\033[92mAdded {url_repo} with language {lang} to repos.txt (dry-run).\033[0m")  # Green for success
+        return
+
     # Clone the repository
     site_path = os.path.join(main_project_path, site_name)
-    if not dry_run:
-        subprocess.run(['git', 'clone', url_repo, site_path], check=True)
-        print(f"\033[92mCloned repository to {site_path}\033[0m")  # Green for success
+    subprocess.run(['git', 'clone', url_repo, site_path], check=True)
+    print(f"\033[92mCloned repository to {site_path}\033[0m")  # Green for success
 
     # Add the site to the configuration
     config['websites'].append({
@@ -60,18 +67,23 @@ def clone_repos_from_file(batch_file=None, main_project_path=None):
     repos_to_clone = []
 
     for line in lines:
-        parts = line.strip().split()
-        if len(parts) < 3 or parts[1] != '--lang':
+        # Skip comments and empty lines
+        if line.strip().startswith('#') or not line.strip():
+            continue
+
+        # Correctly parse the line
+        parts = line.strip().split(' --lang=')
+        if len(parts) != 2:
             print(f"Skipping invalid line: {line.strip()}")
             continue
 
         url_repo = parts[0]
-        lang = parts[2]
+        lang = parts[1]
         site_name = url_repo.split('/')[-1].replace('.git', '')
 
         # Check if the site is already in the config
         if any(site['name'] == site_name for site in config['websites']):
-            print(f"\033[93mWarning: Site {site_name} already exists in mkdocs-lang.yml.\033[0m")  # Yellow for warning
+            print(f"\033[93mWarning: Site {site_name} already exists in mkdocs-lang.yml. Skipping...\033[0m")  # Yellow for warning
             continue
 
         repos_to_clone.append((url_repo, lang))
