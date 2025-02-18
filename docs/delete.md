@@ -6,8 +6,8 @@ The `delete` action allows you to delete a file or folder across all MkDocs webs
 
 ```bash
 mklang del <target-path> [relative-path] [options]
-# or using the manage.py script
-python manage.py del <target-path> [relative-path] [options]
+# or using short options
+mklang del <target-path> [relative-path] -p <path-to-main-project> -d -y
 ```
 
 ### Options
@@ -17,6 +17,13 @@ python manage.py del <target-path> [relative-path] [options]
 - `--project`, `-p`: Specify the path to the main project if not in the current directory.
 - `--dir`, `-d`: Indicate if the target is a directory. Use this flag when deleting directories.
 - `-y`: Automatically confirm execution without prompting for user confirmation.
+
+### What It Does
+
+1. **Determines the Main Project Path**: Uses a utility function to find the main project path.
+2. **Validates Target Path**: Ensures the target path exists and is accessible.
+3. **Deletes Files/Folders**: Deletes the specified file or folder from each MkDocs site.
+4. **Logs the Action**: Records the action details and any errors in the `log/` directory.
 
 ### Examples
 
@@ -42,4 +49,5 @@ python manage.py del <target-path> [relative-path] [options]
 
 - Ensure that the target path is correct and accessible.
 - Use the `--dir` flag when deleting directories to ensure the correct operation.
-- The `-y` option is useful for automating the deletion process without manual confirmation. 
+- The `-y` option is useful for automating the deletion process without manual confirmation.
+- Check the `log/` directory for detailed logs of the action, including any errors encountered during the process. 

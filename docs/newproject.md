@@ -25,6 +25,7 @@ mklang newproject -p /path/to/new/project/website-project -g <github-account>
    - `requirements.txt`: Lists `mkdocs-material` as a dependency.
 4. **Installs Requirements**: Installs the packages listed in `requirements.txt` into the virtual environment.
 5. **Creates `repos.txt` Template**: Provides a template for batch cloning repositories.
+6. **Sets Up Logging**: Creates a `log/` directory for storing log files related to project actions.
 
 ### Project Structure
 
@@ -37,6 +38,7 @@ After running the command, your project directory will look like this:
 ├── requirements.txt
 ├── repos.txt
 ├── venv/
+├── log/
 ```
 
 ### Definitions
@@ -47,4 +49,5 @@ After running the command, your project directory will look like this:
 ### Notes
 
 - Ensure the specified project path is correct and accessible.
-- You can update the GitHub account information in `mkdocs-lang.yml` later using the `config` action. 
+- You can update the GitHub account information in `mkdocs-lang.yml` later using the `config` action.
+- Logs for all actions will be stored in the `log/` directory, providing detailed insights into operations and errors. 

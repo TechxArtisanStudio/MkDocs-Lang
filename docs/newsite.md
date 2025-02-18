@@ -26,6 +26,7 @@ mklang new <mkdocs-site> -p <path-to-the-mainproject> -l <language-code>
 4. **Updates Configuration Files**:
    - Updates `mkdocs.yml` with a template.
    - Adds the new site to `mkdocs-lang.yml`.
+5. **Logs the Action**: Records the action details and any errors in the `log/` directory.
 
 ### Example
 
@@ -38,9 +39,11 @@ mklang new mk-website_es --project /path/to/website-project --lang es
 This command will:
 - Create a new directory named `mk-website_es` in the main project path.
 - Add an entry for `mk-website_es` in the `mkdocs-lang.yml` configuration file.
+- Log the action and any errors encountered during the process.
 
 ### Notes
 
 - Ensure the `mkdocs-lang.yml` file is correctly configured before adding a new site.
 - The `newsite` action will not affect any existing sites or configurations within your project.
-- Supported language codes are based on MkDocs Material's supported languages. 
+- Supported language codes are based on MkDocs Material's supported languages.
+- Check the `log/` directory for detailed logs of the action, including any errors encountered during the process. 

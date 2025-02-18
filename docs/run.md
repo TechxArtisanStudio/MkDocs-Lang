@@ -17,6 +17,13 @@ mklang run "<the-customized-command-line>" [relative-path] -p /path/to/website-p
 - `--project`, `-p`: Specify the path to the main project if not in the current directory.
 - `-y`: Automatically confirm execution without prompting for user confirmation.
 
+### What It Does
+
+1. **Determines the Main Project Path**: Uses a utility function to find the main project path.
+2. **Validates Command**: Ensures the command is valid and executable.
+3. **Executes Command**: Runs the specified command in each MkDocs site directory.
+4. **Logs the Action**: Records the action details, output, and any errors in the `log/` directory.
+
 ### Examples
 
 1. **Git Pull Across All Sites**
@@ -38,6 +45,12 @@ mklang run "<the-customized-command-line>" [relative-path] -p /path/to/website-p
    ```bash
    mklang run "touch blog-1.md"
    ```
+
+### Notes
+
+- Ensure the command is valid and executable in the context of each MkDocs site.
+- The `-y` option is useful for automating the execution process without manual confirmation.
+- Check the `log/` directory for detailed logs of the action, including any output and errors encountered during the process.
 
 ### Optimization
 

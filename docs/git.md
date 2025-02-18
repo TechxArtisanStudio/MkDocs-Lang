@@ -9,7 +9,7 @@ You can use the `git` action in two ways:
 1. **From the main project directory:**
 
    ```bash
-   python manage.py git <git-command> --project /path/to/main/project
+   mklang git <git-command> --project /path/to/main/project
    ```
 
    Replace `<git-command>` with the desired git command, such as `status` or `pull`.
@@ -27,12 +27,19 @@ You can use the `git` action in two ways:
 - `--project`, `-p`: Specify the path to the main project if not running from within a MkDocs site.
 - `-y`: Automatically confirm execution without prompting for confirmation.
 
+## What It Does
+
+1. **Determines the Main Project Path**: Uses a utility function to find the main project path.
+2. **Checks Configuration**: Ensures `mkdocs-lang.yml` exists and reads its content.
+3. **Executes Git Command**: Runs the specified git command in each MkDocs site directory.
+4. **Logs the Action**: Records the action details, output, and any errors in the `log/` directory.
+
 ## Examples
 
 - Check the status of all repositories:
 
   ```bash
-  python manage.py git status --project /home/project/op-website/
+  mklang git status --project /home/project/op-website/
   ```
 
 - Pull the latest changes for all repositories:
@@ -44,10 +51,11 @@ You can use the `git` action in two ways:
 - Sync changes with a commit message:
 
   ```bash
-  python manage.py git sync "Update documentation" --project /home/project/op-website/
+  mklang git commit -m "Update documentation" --project /home/project/op-website/
   ```
 
 ## Notes
 
 - The command will be executed at the root of each MkDocs site, not in subdirectories.
-- Ensure you have the necessary permissions and SSH keys set up for git operations. 
+- Ensure you have the necessary permissions and SSH keys set up for git operations.
+- Check the `log/` directory for detailed logs of the action, including any output and errors encountered during the process. 

@@ -6,8 +6,8 @@ The `copy` action allows you to copy a file or folder across all MkDocs websites
 
 ```bash
 mklang copy <source-path> [relative-path] [options]
-# or using the manage.py script
-python manage.py copy <source-path> [relative-path] [options]
+# or using short options
+mklang copy <source-path> [relative-path] -p <path-to-main-project> -d -f -b
 ```
 
 ### Options
@@ -19,6 +19,14 @@ python manage.py copy <source-path> [relative-path] [options]
 - `-y`: Automatically confirm execution without prompting for user confirmation.
 - `--force`, `-f`: Overwrite existing files without prompting. Use this flag to avoid manual confirmation for overwriting files.
 - `--backup`, `-b`: Create a backup of existing files before overwriting.
+
+### What It Does
+
+1. **Determines the Main Project Path**: Uses a utility function to find the main project path.
+2. **Validates Source Path**: Ensures the source path exists and is accessible.
+3. **Copies Files/Folders**: Copies the specified file or folder to each MkDocs site.
+4. **Handles Overwrites and Backups**: Manages overwriting existing files and creating backups if specified.
+5. **Logs the Action**: Records the action details and any errors in the `log/` directory.
 
 ### Examples
 
@@ -44,4 +52,5 @@ python manage.py copy <source-path> [relative-path] [options]
 
 - Ensure that the source path is correct and accessible.
 - Use the `--force` flag with caution, as it will overwrite existing files without further confirmation.
-- The `--backup` option is useful for preserving the current state of files before making changes. 
+- The `--backup` option is useful for preserving the current state of files before making changes.
+- Check the `log/` directory for detailed logs of the action, including any errors encountered during the process. 
