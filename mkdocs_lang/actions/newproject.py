@@ -14,6 +14,12 @@ def create_project(main_project_path, github_account=None):
     subprocess.run(['python', '-m', 'venv', venv_path])
     print(f"Created virtual environment at {venv_path}")
 
+    # Create a "site" directory for storing mkdocs websites
+    site_path = os.path.join(main_project_path, 'site')
+    if not os.path.exists(site_path):
+        os.makedirs(site_path)
+    print(f"Created site directory at {site_path}")
+
     # Create mkdocs-lang.yml
     mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
     with open(mkdocs_lang_yml_path, 'w') as f:

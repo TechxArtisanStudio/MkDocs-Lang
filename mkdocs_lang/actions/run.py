@@ -23,16 +23,8 @@ def execute_command(command, relative_path=None, main_project_path=None, auto_co
     with open(mkdocs_lang_yml_path, 'r') as f:
         config = yaml.safe_load(f)
 
-    # Prepare the list of site paths
-    site_paths = []
-    for site in config.get('websites', []):
-        site_name = site['name']
-        site_path = os.path.join(main_project_path, site_name)
-        
-        if os.path.exists(site_path):
-            site_paths.append(site_path)
-        else:
-            print(f"\033[93mWarning: Site path {site_path} does not exist.\033[0m")
+    # Prepare the list of site paths using the 'path' key from mkdocs-lang.yml
+    site_paths = [site['path'] for site in config.get('websites', []) if 'path' in site]
 
     # print(f"Debug: Site paths are {site_paths}")
 
@@ -41,24 +33,13 @@ def execute_command(command, relative_path=None, main_project_path=None, auto_co
     if relative_path:
         # Use the specified relative path
         for site_path in site_paths:
-            exec_path = os.path.join(site_path, relative_path)
+            exec_path = os.path.join(site_path, relative_path.lstrip('/'))  # Ensure no leading slash
             execution_paths.append(exec_path)
     else:
-        # Calculate the relative path from the current working directory
-        current_dir = os.getcwd()
+        # Default to running in the root of each MkDocs site
         for site_path in site_paths:
-            if current_dir.startswith(site_path):
-                rel_path = os.path.relpath(current_dir, start=site_path)
-                break
-        else:
-            print("\033[91mError: Current directory is not within any MkDocs site.\033[0m")
-            return
-
-        # Apply the relative path to all sites
-        for site_path in site_paths:
-            exec_path = os.path.join(site_path, rel_path)
+            exec_path = os.path.join(site_path, "")
             execution_paths.append(exec_path)
-            # print(f"Debug: Calculated execution path for site {site_path} is {exec_path}")
 
     # Print the execution paths for confirmation
     if not auto_confirm:

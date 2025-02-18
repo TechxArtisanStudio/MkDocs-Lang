@@ -19,8 +19,13 @@ def clone_repo(url_repo, lang='en', main_project_path=None, dry_run=False):
     with open(mkdocs_lang_yml_path, 'r') as f:
         config = yaml.safe_load(f)
 
+    # Define the site directory path
+    site_path = os.path.join(main_project_path, 'site')
+    if not os.path.exists(site_path):
+        os.makedirs(site_path)
+
     project_name = os.path.splitext(os.path.basename(url_repo))[0]
-    project_path = os.path.join(main_project_path, project_name)
+    project_path = os.path.join(site_path, project_name)  # Store in "site" directory
 
     # Check if the project is already in the config
     existing_project = next((site for site in config['websites'] if site['name'] == project_name), None)
