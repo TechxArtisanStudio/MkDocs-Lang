@@ -76,11 +76,17 @@ def calculate_combined_paths(valid_site_paths, relative_path):
     """
     Calculate combined paths based on valid site paths and the relative path.
     """
+    # Ensure relative_path is a Path object
+    relative_path = Path(relative_path or "")
+    
     combined_paths = []
     for site_path in valid_site_paths:
-        combined_path = site_path / (relative_path or "")
-        if combined_path.exists():
-            combined_paths.append(combined_path)
+        # Ensure site_path is a Path object
+        site_path = Path(site_path)
+        
+        combined_path = site_path / relative_path
+        combined_paths.append(combined_path)
+    
     return combined_paths
 
 def analyze_project_structure():
