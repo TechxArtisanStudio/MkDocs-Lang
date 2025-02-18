@@ -3,6 +3,11 @@ import yaml
 import json
 from contextlib import contextmanager
 from difflib import get_close_matches
+import logging
+from pathlib import Path
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
 
 @contextmanager
 def change_directory(path):
@@ -32,58 +37,75 @@ def validate_language_code(lang):
         suggestion_text = f" Did you mean: {', '.join(suggestions)}?" if suggestions else ""
         raise ValueError(f"Error: Unsupported language code '{lang}'.{suggestion_text}")
 
+def find_main_project_path():
+    """
+    Traverse up the directory tree to find the main project path containing mkdocs-lang.yml.
+    """
+    current_path = Path.cwd()
+    while current_path != current_path.parent:
+        mkdocs_lang_yml_path = current_path / 'mkdocs-lang.yml'
+        if mkdocs_lang_yml_path.exists():
+            return current_path
+        current_path = current_path.parent
+    logging.error("mkdocs-lang.yml not found. Please specify the --project path.")
+    return None
+
+def load_project_config(main_project_path):
+    """
+    Load the mkdocs-lang.yml configuration file.
+    """
+    mkdocs_lang_yml_path = main_project_path / 'mkdocs-lang.yml'
+    try:
+        with open(mkdocs_lang_yml_path, 'r') as f:
+            return yaml.safe_load(f)
+    except Exception as e:
+        logging.error("Failed to load configuration from %s: %s", mkdocs_lang_yml_path, e)
+        return None
+
+def is_inside_mkdocs_website(main_project_path, valid_site_paths):
+    """
+    Check if the current directory is inside a MkDocs website.
+    """
+    for site_path in valid_site_paths:
+        if Path.cwd().is_relative_to(site_path):
+            relative_path = Path.cwd().relative_to(site_path)
+            return True, relative_path
+    return False, None
+
+def calculate_combined_paths(valid_site_paths, relative_path):
+    """
+    Calculate combined paths based on valid site paths and the relative path.
+    """
+    combined_paths = []
+    for site_path in valid_site_paths:
+        combined_path = site_path / (relative_path or "")
+        if combined_path.exists():
+            combined_paths.append(combined_path)
+    return combined_paths
+
 def analyze_project_structure():
     """
     Analyze the project structure to find the main project path containing mkdocs-lang.yml.
     Determine if the current working directory is inside a MkDocs website and calculate the relative path.
     """
-    # Debugging: Print the current working directory
-    print(f"Debug [1]: Current working directory = {os.getcwd()}")
+    main_project_path = find_main_project_path()
+    if not main_project_path:
+        return None, None, None
 
-    current_path = os.getcwd()
-    main_project_path = None
-    is_inside_mkdocs_website = False
-    relative_path_to_mkdocs_root = None
-    combined_paths = []
+    config = load_project_config(main_project_path)
+    if not config:
+        return None, None, None
 
-    while current_path != os.path.dirname(current_path):  # Traverse up to the root
-        mkdocs_lang_yml_path = os.path.join(current_path, 'mkdocs-lang.yml')
-        if os.path.exists(mkdocs_lang_yml_path):
-            with open(mkdocs_lang_yml_path, 'r') as f:
-                config = yaml.safe_load(f)
-                main_project_path = config.get('main_project_path', current_path)
+    valid_site_paths = get_valid_site_paths(main_project_path)
+    inside_mkdocs, relative_path = is_inside_mkdocs_website(main_project_path, valid_site_paths)
+    combined_paths = calculate_combined_paths(valid_site_paths, relative_path)
 
-            # Debugging: Print the found path or None
-            print(f"Debug [2]: Found main_project_path = {main_project_path}")
+    logging.info("Is inside MkDocs website: %s", inside_mkdocs)
+    if inside_mkdocs:
+        logging.info("Relative path to MkDocs root: %s", relative_path)
+        logging.info("Combined valid paths: %s", combined_paths)
 
-            # Check if the current directory is inside a MkDocs website
-            valid_site_paths = get_valid_site_paths(main_project_path)
-            for site_path in valid_site_paths:
-                if os.path.commonpath([os.getcwd(), site_path]) == site_path:
-                    is_inside_mkdocs_website = True
-                    relative_path_to_mkdocs_root = os.path.relpath(os.getcwd(), site_path)
-                    break
-
-            # Calculate combined paths
-            for site_path in valid_site_paths:
-                combined_path = os.path.join(site_path, relative_path_to_mkdocs_root or "")
-                if os.path.exists(combined_path):
-                    combined_paths.append(combined_path)
-
-            break
-
-        current_path = os.path.dirname(current_path)
-    
-    if main_project_path is None:
-        print("Error: mkdocs-lang.yml not found. Please specify the --project path.")
-    
-    # Print the additional information
-    print(f"Debug [3]: Is inside MkDocs website: {is_inside_mkdocs_website}")
-    if is_inside_mkdocs_website:
-        print(f"Debug [4]: Relative path to MkDocs root: {relative_path_to_mkdocs_root}")
-        print(f"Debug [7]: Combined valid paths: {combined_paths}")
-
-    return main_project_path, is_inside_mkdocs_website, combined_paths
+    return main_project_path, inside_mkdocs, combined_paths
 
 def get_valid_site_paths(main_project_path):
     """
