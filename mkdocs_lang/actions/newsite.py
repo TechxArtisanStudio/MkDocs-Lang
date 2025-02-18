@@ -11,14 +11,20 @@ def create_mkdocs_project(mkdocs_site_name, lang='en', main_project_path=None):
         print(e)
         return
 
-    github_account = 'your-github-account'  # Default value
-
-    # Read github_account from mkdocs-lang.yml
     mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
-    if os.path.exists(mkdocs_lang_yml_path):
-        with open(mkdocs_lang_yml_path, 'r') as f:
-            config = yaml.safe_load(f)
-            github_account = config.get('github_account', github_account)
+    if not os.path.exists(mkdocs_lang_yml_path):
+        print(f"\033[91mError: {mkdocs_lang_yml_path} does not exist.\033[0m")
+        return
+
+    with open(mkdocs_lang_yml_path, 'r') as f:
+        config = yaml.safe_load(f)
+
+    # Check if the site already exists
+    if any(site['name'] == mkdocs_site_name and site['lang'] == lang for site in config['websites']):
+        print(f"\033[93mWarning: Site {mkdocs_site_name} with language {lang} already exists in mkdocs-lang.yml. Skipping...\033[0m")
+        return
+
+    github_account = config.get('github_account', 'your-github-account')  # Default value
 
     mkdocs_site_path = os.path.join(main_project_path, mkdocs_site_name)
 
@@ -42,10 +48,6 @@ def create_mkdocs_project(mkdocs_site_name, lang='en', main_project_path=None):
     with open(mkdocs_yml_path, 'w') as mkdocs_yml_file:
         mkdocs_yml_file.write(mkdocs_yml_content)
     print(f"Updated mkdocs.yml for {mkdocs_site_name}")
-
-    # Update mkdocs-lang.yml
-    with open(mkdocs_lang_yml_path, 'r') as f:
-        config = yaml.safe_load(f)
 
     # Append the new site to the websites list
     config['websites'].append({

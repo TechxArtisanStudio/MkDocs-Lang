@@ -18,6 +18,7 @@ def change_directory(path):
 
 # Load language data from JSON file
 LANGUAGE_FILE_PATH = os.path.join(os.path.dirname(__file__), 'languages.json')
+# print(f"Loading language data from: {LANGUAGE_FILE_PATH}")
 with open(LANGUAGE_FILE_PATH, 'r') as f:
     LANGUAGE_DATA = json.load(f)
 
