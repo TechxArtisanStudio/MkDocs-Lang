@@ -10,6 +10,7 @@ def clone_repo(url_repo, lang='en', main_project_path=None, dry_run=False):
         return
 
     mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
+    repos_txt_path = os.path.join(main_project_path, 'repos.txt')
     
     if not os.path.exists(mkdocs_lang_yml_path):
         print(f"\033[91mError: {mkdocs_lang_yml_path} does not exist.\033[0m")  # Red for error
@@ -35,7 +36,14 @@ def clone_repo(url_repo, lang='en', main_project_path=None, dry_run=False):
             print(f"\033[93mProject directory {project_path} already exists but is not listed in mkdocs-lang.yml.\033[0m")  # Yellow for existing directory but missing config
             return
 
-    if not dry_run:
+    if dry_run:
+        # Append to repos.txt without cloning
+        with open(repos_txt_path, 'a') as f:
+            f.write(f"{url_repo} --lang {lang}\n")
+        print(f"Added {url_repo} --lang {lang} to repos.txt (dry run)")
+        return
+
+    if not os.path.exists(project_path):
         # Run the git clone command without capturing output
         result = subprocess.run(['git', 'clone', url_repo, project_path])
         if result.returncode == 0:
@@ -43,9 +51,6 @@ def clone_repo(url_repo, lang='en', main_project_path=None, dry_run=False):
         else:
             print(f"\033[91mError cloning {url_repo}\033[0m")  # Red for error
             return
-    else:
-        # Print the dry-run message in blue
-        print(f"\033[94mDry run\033[0m: Would clone {url_repo} into {project_path}")
 
     if not existing_project:
         if url_repo.startswith("git@"):
@@ -70,33 +75,61 @@ def clone_repo(url_repo, lang='en', main_project_path=None, dry_run=False):
         print(f"Added {project_name} to mkdocs-lang.yml with url_repo: {url_repo_https} and url_git: {url_repo}")  # Success message
 
 def clone_repos_from_file(batch_file=None, main_project_path=None):
+    main_project_path = get_main_project_path(main_project_path)
+    if main_project_path is None:
+        return
+
     if batch_file is None:
-        if main_project_path is None:
-            if os.path.exists('mkdocs-lang.yml'):
-                main_project_path = os.getcwd()
-            else:
-                print("Error: mkdocs-lang.yml not found in the current directory. Please specify the --project path.")
-                return
         batch_file = os.path.join(main_project_path, 'repos.txt')
 
     if not os.path.exists(batch_file):
         print(f"Error: Batch file {batch_file} does not exist.")
         return
 
+    mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
+    if not os.path.exists(mkdocs_lang_yml_path):
+        print(f"Error: {mkdocs_lang_yml_path} does not exist.")
+        return
+
+    with open(mkdocs_lang_yml_path, 'r') as f:
+        config = yaml.safe_load(f)
+
     with open(batch_file, 'r') as f:
         lines = f.readlines()
 
+    repos_to_clone = []
+
     for line in lines:
         parts = line.strip().split()
-        if len(parts) < 2:
+        if len(parts) < 3 or parts[1] != '--lang':
             print(f"Skipping invalid line: {line.strip()}")
             continue
 
         url_repo = parts[0]
-        lang_flag = parts[1]
-        lang = lang_flag.split('=')[1] if '=' in lang_flag else 'en'
+        lang = parts[2]
+        project_name = os.path.splitext(os.path.basename(url_repo))[0]
 
-        clone_repo(url_repo, lang, main_project_path)
+        # Check if the project is already in the config
+        existing_project = next((site for site in config['websites'] if site['name'] == project_name), None)
+        if existing_project:
+            print(f"\033[93m{url_repo}\033[0m with language \033[93m{lang}\033[0m already exists in mkdocs-lang.yml. Skipping")
+            continue
+
+        repos_to_clone.append((url_repo, lang))
+
+    if repos_to_clone:
+        print("The following repositories will be cloned:")
+        for url_repo, lang in repos_to_clone:
+            print(f"  - {url_repo} with language {lang}")
+
+        confirm = input("Do you want to proceed with cloning these repositories? (y/n): ").strip().lower()
+        if confirm == 'y':
+            for url_repo, lang in repos_to_clone:
+                clone_repo(url_repo, lang, main_project_path)
+        else:
+            print("Cloning operation cancelled.")
+    else:
+        print("No new repositories to clone.")
 
 def clone_repos_from_mkdocs_lang(main_project_path=None):
     # Use the utility function to determine the main project path

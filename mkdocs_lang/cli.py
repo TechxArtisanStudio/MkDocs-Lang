@@ -27,8 +27,8 @@ def main(args=None):
     addsite_parser.add_argument('url_repo', nargs='?', help='URL of the GitHub repository to clone')
     addsite_parser.add_argument('--lang', '-l', default='en', help='Language code for the MkDocs project')
     addsite_parser.add_argument('--project', '-p', help='Path to the main project if not in current directory')
-    addsite_parser.add_argument('--batch', '-b', help='Path to a file containing multiple repositories to clone')
-    addsite_parser.add_argument('--dry-run', '-d', action='store_true', help='Add repository to mkdocs-lang.yml without cloning')
+    addsite_parser.add_argument('--batch', '-b', nargs='?', const=True, help='Path to a file containing multiple repositories to clone')
+    addsite_parser.add_argument('--dry-run', '-d', action='store_true', help='Add repository to repos.txt without cloning')
 
     # Custom Command Line action
     cl_parser = subparsers.add_parser('run', help='Execute a custom command across all MkDocs projects.')
@@ -76,8 +76,9 @@ def main(args=None):
     elif args.action == 'config':
         config.update_github_account(args.project, args.github)
     elif args.action == 'addsite':
-        if args.batch:
-            addsite.clone_repos_from_file(args.batch, args.project)
+        if args.batch is not None:
+            batch_file = args.batch if isinstance(args.batch, str) else None
+            addsite.clone_repos_from_file(batch_file, args.project)
         elif args.url_repo:
             addsite.clone_repo(args.url_repo, args.lang, args.project, args.dry_run)
         else:
