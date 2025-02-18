@@ -1,7 +1,7 @@
 import os
 import shutil
 import yaml
-from mkdocs_lang.utils import find_main_project_path, get_valid_site_paths
+from mkdocs_lang.utils import get_valid_site_paths
 
 def delete_item(target_path, relative_path=None, main_project_path=None, is_directory=False, auto_confirm=False):
     # Get valid site paths

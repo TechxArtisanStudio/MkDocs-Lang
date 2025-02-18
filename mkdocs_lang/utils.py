@@ -1,5 +1,18 @@
 import os
 import yaml
+from contextlib import contextmanager
+
+@contextmanager
+def change_directory(path):
+    """
+    Context manager for changing the current working directory.
+    """
+    original_directory = os.getcwd()
+    try:
+        os.chdir(path)
+        yield
+    finally:
+        os.chdir(original_directory)
 
 def analyze_project_structure():
     """
@@ -98,3 +111,17 @@ def get_venv_executable(main_project_path, executable_name):
         return os.path.join(venv_path, 'Scripts', f'{executable_name}.exe')
     else:
         return os.path.join(venv_path, 'bin', executable_name)
+
+def validate_and_analyze_project_path(project_path):
+    """
+    Validate the specified project path and analyze the project structure.
+    """
+    mkdocs_lang_yml_path = os.path.join(project_path, 'mkdocs-lang.yml')
+    if not os.path.exists(mkdocs_lang_yml_path):
+        print(f"\033[91mError: {mkdocs_lang_yml_path} does not exist. Please specify a valid mklang project path.\033[0m")
+        return None, None, None
+
+    # Use the context manager to temporarily change the directory
+    with change_directory(project_path):
+        # Analyze the project structure
+        return analyze_project_structure()

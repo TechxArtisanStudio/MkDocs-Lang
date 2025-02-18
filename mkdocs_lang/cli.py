@@ -1,7 +1,7 @@
 import argparse
 from mkdocs_lang.actions import newproject, config, addsite, run, newsite, removesite, copy, delete, git
 import os
-from mkdocs_lang.utils import analyze_project_structure  # Import the function
+from mkdocs_lang.utils import analyze_project_structure, validate_and_analyze_project_path  # Import the functions
 
 def main(args=None):
     parser = argparse.ArgumentParser(description='Manage multi-language MkDocs projects.')
@@ -73,8 +73,12 @@ def main(args=None):
     if args.action == 'newproject':
         newproject.create_project(args.project, args.github)
     else:
-        # Analyze the project structure
-        main_project_path, is_inside_mkdocs_website, combined_paths = analyze_project_structure()
+        # Use the specified project path if provided
+        if args.project:
+            main_project_path, is_inside_mkdocs_website, combined_paths = validate_and_analyze_project_path(args.project)
+        else:
+            # Analyze the project structure from the current directory
+            main_project_path, is_inside_mkdocs_website, combined_paths = analyze_project_structure()
         
         if main_project_path is None:
             print("\033[91mError: mkdocs-lang.yml not found. Please specify the --project path.\033[0m")
