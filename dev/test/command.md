@@ -1,1 +1,0 @@
-mklang addsite git@github.com:TechxArtisanStudio/Openterface --lang en
