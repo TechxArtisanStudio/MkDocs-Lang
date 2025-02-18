@@ -61,18 +61,19 @@ def clone_repo(url_repo, lang='en', main_project_path=None, dry_run=False):
         else:
             url_repo_https = url_repo.replace("https///", "https://")
 
-        # Add the new project to the config
+        # Add the new project to the config with absolute path
         config['websites'].append({
             'name': project_name,
             'lang': lang,
             'url_repo': url_repo_https,
-            'url_git': url_repo
+            'url_git': url_repo,
+            'path': os.path.abspath(project_path)  # Add absolute path
         })
 
         with open(mkdocs_lang_yml_path, 'w') as f:
             yaml.safe_dump(config, f)
 
-        print(f"Added {project_name} to mkdocs-lang.yml with url_repo: {url_repo_https} and url_git: {url_repo}")  # Success message
+        print(f"Added {project_name} to mkdocs-lang.yml with url_repo: {url_repo_https}, url_git: {url_repo}, and path: {os.path.abspath(project_path)}")  # Success message
 
 def clone_repos_from_file(batch_file=None, main_project_path=None):
     main_project_path = get_main_project_path(main_project_path)

@@ -4,6 +4,8 @@ import yaml
 import sys
 
 def create_project(main_project_path, github_account=None):
+    main_project_path = os.path.abspath(main_project_path)
+    
     if not os.path.exists(main_project_path):
         os.makedirs(main_project_path)
 
@@ -17,6 +19,7 @@ def create_project(main_project_path, github_account=None):
     with open(mkdocs_lang_yml_path, 'w') as f:
         yaml.dump({
             'main_project_path': main_project_path,
+            'venv_path': venv_path,
             'github_account': github_account or 'your-github-account',
             'websites': []
         }, f)
