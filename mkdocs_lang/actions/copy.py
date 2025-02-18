@@ -1,7 +1,7 @@
 import os
 import shutil
 import yaml
-from mkdocs_lang.utils import get_valid_site_paths
+from mkdocs_lang.utils import analyze_project_structure
 
 def copy_item(source_path, relative_path=None, main_project_path=None, is_directory=False, auto_confirm=False, force=False, backup=False):
     # Validate the source path
@@ -9,42 +9,42 @@ def copy_item(source_path, relative_path=None, main_project_path=None, is_direct
         print(f"\033[91mError: Source path {source_path} does not exist.\033[0m")
         return
 
-    # Get valid site paths
-    site_paths = get_valid_site_paths(main_project_path)
+    # Analyze the project structure to get the main project path and combined paths
+    main_project_path, is_inside_mkdocs_website, combined_paths = analyze_project_structure()
 
-    # Determine the relative path for the target
-    if relative_path:
-        source_rel_path = os.path.join(relative_path.lstrip('/'), os.path.basename(source_path))
-    else:
-        source_rel_path = os.path.basename(source_path)
+    if not is_inside_mkdocs_website:
+        print("\033[91mError: The current directory is not inside a MkDocs website.\033[0m")
+        return
+
+    # Determine the execution paths
+    execution_paths = []
+    for combined_path in combined_paths:
+        exec_path = os.path.join(combined_path, relative_path or "")
+        execution_paths.append(exec_path)
 
     # Print the source and target paths for confirmation
     if not auto_confirm:
         print(f"\033[94mThe following item will be copied to each site directory:\033[0m\n{source_path}")
         print("\033[94mThe item will be copied to the following directories:\033[0m")
-        for path in site_paths:
-            target_path = os.path.join(path, source_rel_path)
-            if os.path.exists(path):
-                if target_path == source_path:
-                    print(f"  - {target_path} \033[93m*(source path, skipping)\033[0m")
-                else:
-                    print(f"  - {target_path}")
+        for exec_path in execution_paths:
+            target_path = os.path.join(exec_path, os.path.basename(source_path))
+            # Check if the target path is the same as the source path
+            if os.path.abspath(target_path) == os.path.abspath(source_path):
+                print(f"  - {target_path} \033[93m*(source path, skipping)\033[0m")
             else:
-                print(f"  - {target_path} \033[93m*(directory does not exist, skipping)\033[0m")
+                print(f"  - {target_path}")
         confirm = input("\033[94mDo you want to proceed? (y/n): \033[0m").strip().lower()
         if confirm != 'y':
             print("\033[93mOperation cancelled.\033[0m")
             return
 
     # Copy the item to each site directory
-    for site_path in site_paths:
-        if not os.path.exists(site_path):
-            continue  # Skip if the directory does not exist
-        try:
-            target_path = os.path.join(site_path, source_rel_path)
-            if target_path == source_path:
-                continue  # Skip copying to the source path
+    for exec_path in execution_paths:
+        target_path = os.path.join(exec_path, os.path.basename(source_path))
+        if os.path.abspath(target_path) == os.path.abspath(source_path):
+            continue  # Skip copying to the source path
 
+        try:
             target_dir = os.path.dirname(target_path)
             os.makedirs(target_dir, exist_ok=True)
 
@@ -68,4 +68,4 @@ def copy_item(source_path, relative_path=None, main_project_path=None, is_direct
             
             print(f"\033[92mCopied {source_path} to {target_path}\033[0m")
         except Exception as e:
-            print(f"\033[91mError copying to {site_path}: {e}\033[0m") 
+            print(f"\033[91mError copying to {exec_path}: {e}\033[0m") 

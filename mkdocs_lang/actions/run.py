@@ -1,17 +1,20 @@
 import os
 import subprocess
 import yaml
-from mkdocs_lang.utils import get_valid_site_paths
+from mkdocs_lang.utils import get_valid_site_paths, analyze_project_structure
 
 def execute_command(command, relative_path=None, main_project_path=None, auto_confirm=False):
-    # Get valid site paths
-    site_paths = get_valid_site_paths(main_project_path)
+    # Analyze the project structure to get the main project path and combined paths
+    main_project_path, is_inside_mkdocs_website, combined_paths = analyze_project_structure()
+
+    if not is_inside_mkdocs_website:
+        print("\033[91mError: The current directory is not inside a MkDocs website.\033[0m")
+        return
 
     # Determine the execution paths
     execution_paths = []
-    for site_path in site_paths:
-        # Combine the site path with the relative path to the MkDocs root
-        exec_path = os.path.join(site_path, relative_path or "")
+    for combined_path in combined_paths:
+        exec_path = os.path.join(combined_path, relative_path or "")
         execution_paths.append(exec_path)
 
     # Print the execution paths for confirmation
