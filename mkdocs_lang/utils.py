@@ -1,6 +1,8 @@
 import os
 import yaml
+import json
 from contextlib import contextmanager
+from difflib import get_close_matches
 
 @contextmanager
 def change_directory(path):
@@ -13,6 +15,21 @@ def change_directory(path):
         yield
     finally:
         os.chdir(original_directory)
+
+# Load language data from JSON file
+LANGUAGE_FILE_PATH = os.path.join(os.path.dirname(__file__), 'languages.json')
+with open(LANGUAGE_FILE_PATH, 'r') as f:
+    LANGUAGE_DATA = json.load(f)
+
+def validate_language_code(lang):
+    """
+    Validate the language code against the list of supported languages.
+    Suggest similar codes if the input is incorrect.
+    """
+    if lang not in LANGUAGE_DATA:
+        suggestions = get_close_matches(lang, LANGUAGE_DATA.keys(), n=3)
+        suggestion_text = f" Did you mean: {', '.join(suggestions)}?" if suggestions else ""
+        raise ValueError(f"Error: Unsupported language code '{lang}'.{suggestion_text}")
 
 def analyze_project_structure():
     """
@@ -125,19 +142,3 @@ def validate_and_analyze_project_path(project_path):
     with change_directory(project_path):
         # Analyze the project structure
         return analyze_project_structure()
-
-# List of supported language codes from MkDocs Material
-SUPPORTED_LANGUAGES = {
-    'af', 'sq', 'ar', 'hy', 'az', 'ms', 'eu', 'be', 'bn', 'bg', 'my', 'ca', 'zh', 'zh-TW', 'zh-Hant',
-    'hr', 'cs', 'da', 'nl', 'en', 'eo', 'et', 'fi', 'fr', 'gl', 'ka', 'de', 'el', 'he', 'hi', 'hu',
-    'is', 'id', 'it', 'ja', 'kn', 'ko', 'ku-IQ', 'lv', 'lt', 'lb', 'mk', 'mn', 'nb', 'nn', 'fa',
-    'pl', 'pt', 'pt-BR', 'ro', 'ru', 'sa', 'sr', 'sh', 'si', 'sk', 'sl', 'es', 'sv', 'tl', 'ta',
-    'te', 'th', 'tr', 'uk', 'ur', 'uz', 'vi'
-}
-
-def validate_language_code(lang):
-    """
-    Validate the language code against the list of supported languages.
-    """
-    if lang not in SUPPORTED_LANGUAGES:
-        raise ValueError(f"Error: Unsupported language code '{lang}'. Please use one of the supported language codes.")
