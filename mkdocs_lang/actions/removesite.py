@@ -1,14 +1,8 @@
 import os
 import shutil
 import yaml
-from mkdocs_lang.utils import get_main_project_path
 
 def remove_site(site_name, main_project_path=None):
-    # Use the utility function to determine the main project path
-    main_project_path = get_main_project_path(main_project_path)
-    if main_project_path is None:
-        return
-
     mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
     
     if not os.path.exists(mkdocs_lang_yml_path):

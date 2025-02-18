@@ -39,4 +39,28 @@ def get_venv_executable(main_project_path, executable_name):
     if os.name == 'nt':
         return os.path.join(venv_path, 'Scripts', f'{executable_name}.exe')
     else:
-        return os.path.join(venv_path, 'bin', executable_name) 
+        return os.path.join(venv_path, 'bin', executable_name)
+
+def get_valid_site_paths(main_project_path):
+    """
+    Retrieve the list of valid site paths from mkdocs-lang.yml.
+    """
+    mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
+    
+    if not os.path.exists(mkdocs_lang_yml_path):
+        print(f"\033[91mError: {mkdocs_lang_yml_path} does not exist.\033[0m")
+        return []
+
+    with open(mkdocs_lang_yml_path, 'r') as f:
+        config = yaml.safe_load(f)
+
+    # Prepare the list of site paths using the 'path' key from mkdocs-lang.yml
+    site_paths = [site['path'] for site in config.get('websites', []) if 'path' in site]
+
+    # Filter out non-existent paths
+    valid_site_paths = [path for path in site_paths if os.path.exists(path)]
+    for path in site_paths:
+        if not os.path.exists(path):
+            print(f"\033[93mWarning: Site path {path} does not exist.\033[0m")
+
+    return valid_site_paths 

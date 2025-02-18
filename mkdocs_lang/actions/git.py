@@ -1,17 +1,8 @@
 import os
 import subprocess
-from mkdocs_lang.utils import find_main_project_path
 import yaml
 
 def execute_git_command(command, main_project_path=None, auto_confirm=False):
-    # Determine the main project path if not provided
-    if main_project_path is None:
-        main_project_path = find_main_project_path()
-    
-    if main_project_path is None:
-        print("\033[91mError: Main project path could not be determined.\033[0m")
-        return
-
     mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
     
     if not os.path.exists(mkdocs_lang_yml_path):

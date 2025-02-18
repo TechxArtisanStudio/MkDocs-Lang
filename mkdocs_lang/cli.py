@@ -2,7 +2,7 @@ import argparse
 from mkdocs_lang.actions import newproject, config, addsite, run, newsite, removesite, copy, delete, git
 import os
 
-def main(args=None):
+def main(args=None, main_project_path=None):
     parser = argparse.ArgumentParser(description='Manage multi-language MkDocs projects.')
     subparsers = parser.add_subparsers(dest='action')
 
@@ -69,30 +69,31 @@ def main(args=None):
     # Parse arguments
     args = parser.parse_args(args)
 
+    # Pass the main_project_path to each action
     if args.action == 'newproject':
         newproject.create_project(args.project, args.github)
     elif args.action == 'newsite':
-        newsite.create_mkdocs_project(args.mkdocs_project, args.lang, args.project)
+        newsite.create_mkdocs_project(args.mkdocs_project, args.lang, main_project_path)
     elif args.action == 'config':
-        config.update_github_account(args.project, args.github)
+        config.update_github_account(main_project_path, args.github)
     elif args.action == 'addsite':
         if args.batch is not None:
             batch_file = args.batch if isinstance(args.batch, str) else None
-            addsite.clone_repos_from_file(batch_file, args.project)
+            addsite.clone_repos_from_file(batch_file, main_project_path)
         elif args.url_repo:
-            addsite.clone_repo(args.url_repo, args.lang, args.project, args.dry_run)
+            addsite.clone_repo(args.url_repo, args.lang, main_project_path, args.dry_run)
         else:
-            addsite.clone_repos_from_mkdocs_lang(args.project)
+            addsite.clone_repos_from_mkdocs_lang(main_project_path)
     elif args.action == 'run':
-        run.execute_command(args.command, args.relative_path, args.project, args.y)
+        run.execute_command(args.command, args.relative_path, main_project_path, args.y)
     elif args.action == 'removesite':
-        removesite.remove_site(args.site_name, args.project)
+        removesite.remove_site(args.site_name, main_project_path)
     elif args.action == 'copy':
-        copy.copy_item(args.source, args.relative_path, args.project, args.dir, args.y, args.force, args.backup)
+        copy.copy_item(args.source, args.relative_path, main_project_path, args.dir, args.y, args.force, args.backup)
     elif args.action == 'del':
-        delete.delete_item(args.target, args.relative_path, args.project, args.dir, args.y)
+        delete.delete_item(args.target, args.relative_path, main_project_path, args.dir, args.y)
     elif args.action == 'git':
-        git.execute_git_command(args.git_command, args.project, args.y)
+        git.execute_git_command(args.git_command, main_project_path, args.y)
 
 if __name__ == '__main__':
     main()

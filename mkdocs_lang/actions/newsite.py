@@ -1,7 +1,7 @@
 import os
 import subprocess
 import yaml
-from mkdocs_lang.utils import get_main_project_path, get_venv_executable
+from mkdocs_lang.utils import get_venv_executable
 
 # List of supported language codes from MkDocs Material
 SUPPORTED_LANGUAGES = {
@@ -20,28 +20,12 @@ def create_mkdocs_project(mkdocs_site_name, lang='en', main_project_path=None):
 
     github_account = 'your-github-account'  # Default value
 
-    # Use the utility function to determine the main project path
-    main_project_path = get_main_project_path(main_project_path)
-    if main_project_path is None:
-        return
-
-    if main_project_path is None:
-        # Check if mkdocs-lang.yml exists in the current directory
-        if os.path.exists('mkdocs-lang.yml'):
-            with open('mkdocs-lang.yml', 'r') as f:
-                config = yaml.safe_load(f)
-                main_project_path = config.get('main_project_path')
-                github_account = config.get('github_account', github_account)
-        else:
-            print("Error: mkdocs-lang.yml not found. Please specify the main project path.")
-            return
-    else:
-        # If main_project_path is provided, try to read github_account from mkdocs-lang.yml
-        mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
-        if os.path.exists(mkdocs_lang_yml_path):
-            with open(mkdocs_lang_yml_path, 'r') as f:
-                config = yaml.safe_load(f)
-                github_account = config.get('github_account', github_account)
+    # Read github_account from mkdocs-lang.yml
+    mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
+    if os.path.exists(mkdocs_lang_yml_path):
+        with open(mkdocs_lang_yml_path, 'r') as f:
+            config = yaml.safe_load(f)
+            github_account = config.get('github_account', github_account)
 
     mkdocs_site_path = os.path.join(main_project_path, mkdocs_site_name)
 
@@ -67,7 +51,6 @@ def create_mkdocs_project(mkdocs_site_name, lang='en', main_project_path=None):
     print(f"Updated mkdocs.yml for {mkdocs_site_name}")
 
     # Update mkdocs-lang.yml
-    mkdocs_lang_yml_path = os.path.join(main_project_path, 'mkdocs-lang.yml')
     with open(mkdocs_lang_yml_path, 'r') as f:
         config = yaml.safe_load(f)
 
